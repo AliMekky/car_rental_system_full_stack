@@ -1,0 +1,42 @@
+.countrySelect{
+    display: inline-block;
+    width : 100%;
+    background: #F6F7F9;
+    border-radius: 10px;
+    padding : 5px;
+    font-size: 16px;
+    color : black;
+
+/* Inside auto layout */
+
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    font-weight: 500;
+}
+
+.login{
+    background: rgba(92, 175, 252, 0.3);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    /* border-radius: 4px; */
+}
+
+.login:hover{
+    background-color: #3653e9;
+}
+
+.box{
+    align-items: center;
+    text-align: center;
+    justify-items: center;
+    /* width : 2rem;
+    height : 2rem; */
+    position: absolute;
+    background-color: #3653e9;
+    color : white;
+    z-index: 1;
+    border-radius: 10px;
+    padding : 10px;
+    left : 44%;
+    top : 44%;
+}

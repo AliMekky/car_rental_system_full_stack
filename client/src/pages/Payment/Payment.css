@@ -1,0 +1,132 @@
+.container{
+  padding:0;
+
+}
+body {
+  background: #f6f7f9;
+  font-family: "Poppins", sans-serif;
+}
+
+.form-title {
+  font-family: "Poppins", sans-serif;
+  color: black;
+
+  text-align: left;
+  /* Rental Info */
+
+  width: 200px;
+  height: 24px;
+
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  /* or 30px */
+
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.03em;
+
+  /* Secondary/500 */
+
+  color: #1a202c;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.card {
+  border-radius: 1rem;
+}
+
+.btn {
+  background-color: #3653e9;
+  font-family: "Poppins", sans-serif;
+  color: white;
+  font-size: 16px;
+}
+
+.title {
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: 0;
+
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  /* or 30px */
+
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.03em;
+
+  /* Secondary/500 */
+
+  color: #1a202c;
+
+  /* Inside auto layout */
+
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.form-control {
+  background: #f6f7f9;
+  font-size: 16px;
+}
+
+.form-title span {
+  margin-left: 5%;
+  margin-top: 5%;
+}
+.footer {
+  font-size: 12px;
+  font-weight: 450;
+}
+
+.label_text {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.02em;
+  color: #1a202c;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  margin-top: 10px;
+}
+
+.label_title {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 150%;
+  display: flex;
+  align-items: left;
+  letter-spacing: -0.02em;
+  color: #90a3bf;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+.nom{
+    margin-bottom: 10px;
+}
+
+.btn_ctn{
+  align-items: center;
+  position:absolute;
+  width:56%;
+}
+
+.edit{
+  align-items: center;
+  height:350px;
+}

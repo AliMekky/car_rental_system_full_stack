@@ -1,0 +1,195 @@
+body{
+    font-family:'Poppins', sans-serif;
+}
+
+
+.navbar{
+    box-sizing: border-box;
+    justify-content: space-between;
+    width: 100%;
+    height: 80px;
+    left: 0px;
+    top: 0px;
+    /* background: #FFFFFF; */
+    background: #FFFFFF;
+    border: 1px solid rgba(195, 212, 233, 0.4);
+}
+
+.selectTitle{
+     font-size: 16px;
+}
+
+.countrySelect{
+    display: inline-block;
+    width : 100%;
+    background: #F6F7F9;
+    border-radius: 10px;
+    padding : 5px;
+    font-size: 16px;
+    color : black;
+
+/* Inside auto layout */
+
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    font-weight: 500;
+}
+
+
+
+.buttons{
+    position: absolute;
+    right : 10px;
+    padding : 10px;
+}
+
+.btn{
+    margin-left: 10px;
+    padding : auto 20px;
+    gap: 8px;
+    height : 2.5rem;
+    width : 6rem;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 200;
+}
+
+.login{
+    background: rgba(92, 175, 252, 0.3);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    /* border-radius: 4px; */
+}
+
+.login:hover{
+    background-color: #3653e9;
+}
+
+.signup{
+    background-color: #3653e9;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.middle-section{
+    background-image: url(http://www.transparenttextures.com/patterns/shattered.png);
+    background-color: #3653e9;
+    height: 500px;
+   
+}
+
+.paragraph{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    align-items: center;
+    color: #FFFFFF;
+    padding: 40px;
+}
+
+
+.box{
+    align-items: center;
+    text-align: center;
+    justify-items: center;
+    /* width : 2rem;
+    height : 2rem; */
+    position: absolute;
+    background-color: #3653e9;
+    color : white;
+    /* z-index: 1; */
+    border-radius: 10px;
+    padding : 10px;
+    left : 44%;
+    top : 44%;
+}
+
+img{
+    width: 80%;
+    height : 80%;
+    border-radius: 10px;
+}
+
+.paragraph .par1{
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 32px;
+    font-weight: 500;
+}
+
+
+.paragraph .par2{
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.go{
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    /* position: absolute; */
+    width: 100%;
+    height: 80px;
+    color: #3653e9;
+    font-weight: 600;
+    font-size: 36px;
+    /* background: #FFFFFF; */
+    
+}
+
+
+.last-section{
+    margin : 10px 0;
+    padding : 40px;
+}
+.slogan{
+    color: rgba(19, 19, 19, 0.6);
+    font-weight: 500;
+    font-size: 16px;
+    
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.property{
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.property-icon{
+    font-size: large;
+    margin-bottom: 5px;
+}
+
+.founders{
+    font-weight: 600;
+    font-size: 20px;
+    color: #1A202C;
+    margin-bottom: 10px;
+}
+
+.founder{
+    font-weight: 500;
+    font-size: 16px;
+    color: rgba(19, 19, 19, 0.6);
+}
+
+.footer{
+    font-size: 16px;
+    font-weight: 500;
+    color : #1A202C;
+    text-align: left;
+    padding : 20px;
+}
+
+.footer hr{
+    margin-bottom: 30px;
+}
+
+

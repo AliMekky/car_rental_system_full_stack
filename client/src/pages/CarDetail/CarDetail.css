@@ -1,0 +1,193 @@
+.container {
+  margin-top: 4%;
+  height: 250px;
+}
+
+.col-md-3 {
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  color: black;
+  background-color: transparent;
+  padding-right: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+
+}
+.title-word {
+  font-size: 13px;
+  font-weight: 770;
+  text-align: left;
+}
+
+.value-word {
+  color: #90a3bf;
+  font-weight: 700;
+}
+.row {
+  margin-bottom: 0;
+}
+.table__data {
+  background-color: transparent;
+}
+:root {
+  --surface-color: #fff;
+  --curve: 40;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #f6f7f9;
+  font-family: "Poppins", sans-serif;
+}
+
+
+.cards {
+  width: 60%;
+  height: 60%;
+  gap: 2rem;
+  margin: auto;
+  padding: 20px;
+  list-style-type: none;
+}
+
+.card {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: calc(var(--curve) * 1px);
+  overflow: hidden;
+  text-decoration: none;
+}
+.data {
+  padding: 20px;
+}
+.card__image {
+  width: 100%;
+  height: auto;
+}
+
+.border {
+  border: none;
+}
+
+.card__overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  border-radius: calc(var(--curve) * 1px);
+  background-color: var(--surface-color);
+  transform: translateY(100%);
+  transition: 0.2s ease-in-out;
+}
+
+.card:hover .card__overlay {
+  transform: translateY(0);
+}
+
+.card__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2em;
+  padding-bottom: 40px;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  border-radius: calc(var(--curve) * 1px) 0 0 0;
+  background-color: var(--surface-color);
+  transform: translateY(-100%);
+  transition: 0.2s ease-in-out;
+}
+
+.card__arc {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  z-index: 1;
+}
+
+.card__arc path {
+  fill: var(--surface-color);
+  d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
+}
+
+.card:hover .card__header {
+  transform: translateY(0);
+}
+
+.card__thumb {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.card__title {
+  font-size: 1em;
+  margin: 0 0 0.3em;
+  color: #3563e9;
+}
+
+.car__price {
+  font-weight: 700;
+  font-size: 20px;
+  overflow: hidden;
+  position: absolute;
+  right: 10px;
+  color: #90a3bf;
+}
+.car__name_m {
+  font-weight: 700;
+  font-size: 20px;
+  color: black;
+  right:100px;
+  align-items: left;
+  bottom:0;
+}
+.car__price_m {
+  font-weight: 650;
+  font-size: 16px;
+  overflow: hidden;
+  position: absolute;
+  right: 10px;
+  color: white;
+}
+
+button {
+  float: right;
+}
+.align_same {
+  width: 150px;
+  overflow: hidden;
+  text-align: center;
+  align-items: center;
+  margin: auto;
+}
+
+.car__name {
+  font-weight: 700;
+  font-size: 20px;
+  color: white;
+  top:20px;
+  align-items: left;
+}
+
+
+.card__description {
+  padding: 0 2em 2em;
+  margin: 0;
+  color: grey;
+  font-family: "MockFlowFont";
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
