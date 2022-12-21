@@ -40,12 +40,15 @@ app.get("/customerReservations", (req, res) => {
   console.log(stat);
   db.query(stat, (err, rows) => {
     if (!err) {
-        res.send(rows)
+        var data = JSON.parse(JSON.stringify(rows));
     } else {
         console.log(err)
     }
-    console.log('Reservations are: \n', rows);
+    console.log('Reservations are: \n', data);
+    res.json(data);
 })
+// console.log('Reservations are: \n', data);
+
 });
 
 const PORT = 4000; // backend routing port
