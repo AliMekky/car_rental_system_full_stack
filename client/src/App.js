@@ -17,6 +17,7 @@ import Signup from "./pages/Signup/Signup.jsx";
 import Payment from "./pages/Payment/Payment.jsx";
 import Home from "./pages/Home/Home";
 import Admin from "./pages/Admin/Admin.jsx";
+import Table from "./pages/Table/Table.jsx";
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
         <Route path="/Login" element ={<Login/>}/>
         <Route path="/Signup" element ={<Signup/>}/>
         <Route path="/Admin" element={<Admin/>}></Route>
+        <Route path="/Table" element ={<Table/>}/>
+
       </Routes>
     </BrowserRouter>
   );

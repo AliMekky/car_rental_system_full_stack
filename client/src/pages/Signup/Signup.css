@@ -99,7 +99,7 @@ body{
 
 .btn-disp{
     display: block;
-    position: absolute;
+    /* position: absolute; */
     margin-top: 20px;
     margin-bottom: 20px;
 }
