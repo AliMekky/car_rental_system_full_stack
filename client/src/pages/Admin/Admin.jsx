@@ -50,8 +50,8 @@ function Admin() {
             <Navbar />
 
             <div className=" container  justify-content-center align-items-center ">
-                <div className="row">
-                    <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
+                <div className="row justify-content-center">
+                    <div className=" col-8 col-md-8 col-sm-8 col-lg-4 col-xl-4">
                         <div className="card shadow-2-strong report">
                             <div className=" card-body p-5 text-center card-size " onClick={() => { setNewCar(true); }}>
                                 <img src={Car} alt="car" className="image-spacing" style={{"marginBottom":"5%"}}></img>
@@ -59,7 +59,7 @@ function Admin() {
                             </div>
                         </div>
                     </div>
-                    <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
+                    <div className=" col-8 col-md-8 col-sm-8 col-lg-4 col-xl-4">
                         <div className="card shadow-2-strong report">
                             <div className=" card-body p-5 text-center card-size" onClick={() => { setUpdateStatus(true); }}>
                                 <img src={Update} alt="update" className="image-spacing" style={{"marginBottom":"5%"}} ></img>
@@ -67,7 +67,7 @@ function Admin() {
                             </div>
                         </div>
                     </div>
-                    <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
+                    <div className=" col-8 col-md-8 col-sm-8 col-lg-4 col-xl-4">
                         <div className="card shadow-2-strong report" onClick={() => { setStatus(true); }}>
                             <div className=" card-body p-5 text-center card-size ">
                                 <img src={Status} alt="status" className="image-spacing" style={{"marginBottom":"5%"}} ></img>
@@ -76,8 +76,8 @@ function Admin() {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
+                <div className="row justify-content-center">
+                    <div className=" col-8 col-md-8 col-sm-8 col-lg-4 col-xl-4">
                         <div className="card shadow-2-strong report" onClick={() => { setDate(true); }}>
                             <div className=" card-body p-5 text-center card-size">
                                 <img src={Chart} alt="chart" className="image-spacing" ></img>
@@ -85,7 +85,7 @@ function Admin() {
                             </div>
                         </div>
                     </div>
-                    <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4 h-100">
+                    <div className=" col-8 col-md-8 col-sm-8 col-lg-4 col-xl-4 h-100">
                         <div className="card shadow-2-strong report" onClick={() => { setCar(true); }}>
                             <div className=" card-body p-5 text-center card-size">
                                 <img src={Chart} alt="chart"   className="image-spacing" style={{"marginBottom":"5%"}}></img>
@@ -93,7 +93,7 @@ function Admin() {
                             </div>
                         </div>
                     </div>
-                    <div className=" col-12  col-md-12 col-sm-12 col-lg-4 col-xl-4 h-100">
+                    <div className=" col-8  col-md-8 col-sm-8 col-lg-4 col-xl-4 h-100">
                         <div className="card shadow-2-strong report" onClick={() => {
                             setCust(true);
                         }}>
@@ -104,11 +104,7 @@ function Admin() {
                         </div>
 
                     </div>
-                </div>
-
-                <div className="row justify-content-start">
-
-                    <div className=" col-12  col-md-12 col-sm-12 col-lg-4 col-xl-4 ">
+                    <div className=" col-8 col-md-8 col-sm-8 col-lg-4 col-xl-4 ">
                         <div className="card shadow-2-strong report" onClick={() => { setPayment(true); }}>
                             <div className=" card-body p-5 text-center card-size">
                                 <img src={Money} alt="Money" className="image-spacing"  ></img>
@@ -117,6 +113,18 @@ function Admin() {
                         </div>
                     </div>
                 </div>
+
+                {/* <div className="row justify-content-start">
+
+                    <div className=" col-8 col-md-8 col-sm-8 col-lg-4 col-xl-4 ">
+                        <div className="card shadow-2-strong report" onClick={() => { setPayment(true); }}>
+                            <div className=" card-body p-5 text-center card-size">
+                                <img src={Money} alt="Money" className="image-spacing"  ></img>
+                                <h2> Daily payments </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div> */}
 
             </div>
             {CustOpen && (
