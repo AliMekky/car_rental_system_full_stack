@@ -24,7 +24,7 @@ function OneDatePopup(props) {
                                     
                                     <div class=" d-flex justify-content-end ">
 
-                                        <button class="btn btn-primary  btn-lg btn-block" type="submit">Generate</button>
+                                        <button class="btn btn-primary btn-size btn-lg btn-block" type="submit" style={{"width":"20%"}}>Generate</button>
 
                                     </div>
                                 </div>

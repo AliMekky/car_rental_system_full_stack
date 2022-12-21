@@ -12,6 +12,8 @@ import Customer from "./Assets/user-search-svgrepo-com.svg";
 import Status from "./Assets/status-manual-svgrepo-com.svg";
 import Chart from "./Assets/chart-up-svgrepo-com.svg";
 import OneDatePopup from "./OneDatePopup";
+import UpdateStatus from "../UpdateStatus/UpdateStatus";
+import AddCar from "../AddCar/AddCar";
 
 
 
@@ -28,13 +30,19 @@ function Admin() {
     const [CustOpen, setCust] = useState(false);
     ///// for daily payments//////
     const [PaymentOpen, setPayment] = useState(false);
+    /// for add new car//
+    const [NewCarOPen, setNewCar] = useState(false);
+    //// for update status///
+    const [UpdatStatusOPen, setUpdateStatus] = useState(false);
+
     const handleClose = () => {
         setStatus(false);
         setCar(false);
         setDate(false);
         setCust(false);
         setPayment(false);
-
+        setNewCar(false);
+        setUpdateStatus(false);
     };
 
     return (
@@ -45,24 +53,24 @@ function Admin() {
                 <div className="row">
                     <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
                         <div className="card shadow-2-strong report">
-                            <div className=" card-body p-5 text-center">
-                                <img src={Car} alt="car" className="image-spacing"></img>
+                            <div className=" card-body p-5 text-center card-size " onClick={() => { setNewCar(true); }}>
+                                <img src={Car} alt="car" className="image-spacing" style={{"marginBottom":"5%"}}></img>
                                 <h2> Add new car </h2>
                             </div>
                         </div>
                     </div>
                     <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
                         <div className="card shadow-2-strong report">
-                            <div className=" card-body p-5 text-center">
-                                <img src={Update} alt="update" className="image-spacing"></img>
+                            <div className=" card-body p-5 text-center card-size" onClick={() => { setUpdateStatus(true); }}>
+                                <img src={Update} alt="update" className="image-spacing" style={{"marginBottom":"5%"}} ></img>
                                 <h2> update status </h2>
                             </div>
                         </div>
                     </div>
                     <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
                         <div className="card shadow-2-strong report" onClick={() => { setStatus(true); }}>
-                            <div className=" card-body p-5 text-center">
-                                <img src={Status} alt="status" className="image-spacing" ></img>
+                            <div className=" card-body p-5 text-center card-size ">
+                                <img src={Status} alt="status" className="image-spacing" style={{"marginBottom":"5%"}} ></img>
                                 <h2>  car status </h2>
                             </div>
                         </div>
@@ -71,25 +79,25 @@ function Admin() {
                 <div className="row">
                     <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
                         <div className="card shadow-2-strong report" onClick={() => { setDate(true); }}>
-                            <div className=" card-body p-5 text-center">
-                                <img src={Chart} alt="chart" className="image-spacing"></img>
-                                <h3> Browse by date </h3>
+                            <div className=" card-body p-5 text-center card-size">
+                                <img src={Chart} alt="chart" className="image-spacing" ></img>
+                                <h2> Browse by date </h2>
                             </div>
                         </div>
                     </div>
-                    <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4">
+                    <div className=" col-12 col-md-12 col-sm-12 col-lg-4 col-xl-4 h-100">
                         <div className="card shadow-2-strong report" onClick={() => { setCar(true); }}>
-                            <div className=" card-body p-5 text-center">
-                                <img src={Chart} alt="chart" className="image-spacing"></img>
+                            <div className=" card-body p-5 text-center card-size">
+                                <img src={Chart} alt="chart"   className="image-spacing" style={{"marginBottom":"5%"}}></img>
                                 <h2> Browse by car </h2>
                             </div>
                         </div>
                     </div>
-                    <div className=" col-12  col-md-12 col-sm-12 col-lg-4 col-xl-4">
+                    <div className=" col-12  col-md-12 col-sm-12 col-lg-4 col-xl-4 h-100">
                         <div className="card shadow-2-strong report" onClick={() => {
                             setCust(true);
                         }}>
-                            <div className=" card-body p-5 text-center">
+                            <div className=" card-body p-5 text-center card-size ">
                                 <img src={Customer} alt="customer" className="image-spacing"></img>
                                 <h2>  Browse by customer  </h2>
                             </div>
@@ -100,11 +108,11 @@ function Admin() {
 
                 <div className="row justify-content-start">
 
-                    <div className=" col-12  col-md-12 col-sm-12 col-lg-4 col-xl-4">
+                    <div className=" col-12  col-md-12 col-sm-12 col-lg-4 col-xl-4 ">
                         <div className="card shadow-2-strong report" onClick={() => { setPayment(true); }}>
-                            <div className=" card-body p-5 text-center">
-                                <img src={Money} alt="Money" className="image-spacing" ></img>
-                                <h3> Daily payments </h3>
+                            <div className=" card-body p-5 text-center card-size">
+                                <img src={Money} alt="Money" className="image-spacing"  ></img>
+                                <h2> Daily payments </h2>
                             </div>
                         </div>
                     </div>
@@ -142,6 +150,20 @@ function Admin() {
 
                     close={handleClose}
                     title={"Generate a report on daily payments within a specific period"}
+                />
+            )}
+            {UpdatStatusOPen && (
+                <UpdateStatus
+
+                    close={handleClose}
+                    
+                />
+            )}
+            {NewCarOPen && (
+                <AddCar
+
+                    close={handleClose}
+                    
                 />
             )}
             
