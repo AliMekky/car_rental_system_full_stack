@@ -44,7 +44,7 @@ app.get("/customerReservations", (req, res) => {
     } else {
         console.log(err)
     }
-    console.log('Reservations are: \n', rows)
+    console.log('Reservations are: \n', rows);
 })
 });
 
