@@ -33,7 +33,20 @@ app.get('/browseCar', (req, res) => {
 })
 });
 
-
+app.get("/customerReservations", (req, res) => {
+  let name = req.query.name;
+  let email = req.query.email;
+  let stat = "SELECT * FROM RESERVATION NATURAL JOIN CUSTOMER WHERE NAME=\"" + name + "\" AND EMAIL=\""+email+"\"";
+  console.log(stat);
+  db.query(stat, (err, rows) => {
+    if (!err) {
+        res.send(rows)
+    } else {
+        console.log(err)
+    }
+    console.log('Reservations are: \n', rows)
+})
+});
 
 const PORT = 4000; // backend routing port
 app.listen(PORT, () => {
