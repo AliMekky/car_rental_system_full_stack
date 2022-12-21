@@ -82,9 +82,7 @@ function CustomerPopup(props) {
                     </div>
                   </div>
                   <div class=" d-flex justify-content-end ">
-                    <button
-                      class="btn btn-primary  btn-lg btn-block"
-                      type="submit"
+                    <button class="btn btn-primary btn-size btn-lg btn-block" type="submit" style={{"width":"30%"}}
                       onClick={cust_reservation}
                     >
                       Generate
