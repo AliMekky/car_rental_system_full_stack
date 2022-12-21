@@ -14,6 +14,11 @@ body{
 }
 .card-edit{
     border-width: 0 ;
+  
+}
+.card-size{
+    
+    height: 304px;
 }
 .btn-gen{
     margin-top: 2%;
@@ -93,5 +98,8 @@ body{
 }
 .day{
     font-size: large;
+}
+.btn{
+    width: 100px;
 }
 

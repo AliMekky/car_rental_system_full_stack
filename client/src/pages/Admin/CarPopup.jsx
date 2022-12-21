@@ -42,7 +42,7 @@ function CarPopup(props){
                                     </div>
                                     <div class=" d-flex justify-content-end ">
                                         
-                                        <button class="btn btn-primary  btn-lg btn-block" type="submit">Generate</button>
+                                        <button class="btn btn-primary btn-size  btn-lg btn-block" type="submit" style={{"width":"30%"}}>Generate</button>
                                         
                                     </div>
                                 </div>
