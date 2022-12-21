@@ -96,4 +96,14 @@ body{
     font-weight: 450;
 }
 
+.btn-disp{
+    display: block;
+    position: absolute;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.p-disp{
+    margin-top: 50px;
+}
+
 

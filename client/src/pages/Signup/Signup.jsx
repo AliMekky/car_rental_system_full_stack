@@ -49,9 +49,10 @@ function Signup() {
                           </div>
 
 
-                          <button class="btn btn-primary btn-lg btn-block" type="submit">Continue</button>
+                    
+                          <button class="btn btn-primary btn-lg btn-block btn-disp" style = {{width : "7rem"}} type="submit">Continue</button>
                           <hr/>
-                          <p class="footer">New member? Sign up <a>Here</a> </p>
+                          <p class="footer p-disp">New member? Sign up <a>Here</a> </p>
   
                       </div>
                       </div>
