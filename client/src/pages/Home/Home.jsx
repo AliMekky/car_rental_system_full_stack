@@ -14,8 +14,8 @@ function Home() {
       <div class = "navbar">
         <span class = "logo">GO CAR.</span>
         <span class = "buttons">
-            <a class="login btn btn-primary" href="#" role="button">LOGIN</a>
-            <a class="signup btn btn-primary" href="#" role="button">SIGN UP</a>
+            <a class="login btn btn-primary" href="/Login" role="button">LOGIN</a>
+            <a class="signup btn btn-primary" href="/Signup" role="button">SIGN UP</a>
         </span>
       </div>
 
@@ -40,7 +40,7 @@ function Home() {
                   <InputBox title = {"Drop-off"}/>
                 </div>  
                 <div style = {{"margin-top" : "20px"}}>
-                <a class="login btn btn-primary" href="#" role="button">GO</a>
+                <a class="login btn btn-primary" href="/BrowseCars" role="button">GO</a>
                 </div>
             </form>    
 

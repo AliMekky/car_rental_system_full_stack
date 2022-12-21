@@ -51,7 +51,7 @@ function Signup() {
 
                           <button class="btn btn-primary btn-lg btn-block" type="submit">Continue</button>
                           <hr/>
-                          <p class="footer">New member? Sign up <a>Here</a> </p>
+                          <p class="footer">Already a member? Login <a href="/Login">Here</a> </p>
   
                       </div>
                       </div>

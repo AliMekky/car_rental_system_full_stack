@@ -31,7 +31,7 @@ function Login() {
 
                         <button class="btn btn-primary btn-lg btn-block" type="submit">Continue</button>
                         <hr/>
-                        <p class="footer">New member? Sign up <a>Here</a> </p>
+                        <p class="footer">New member? Sign up <a href="/Signup">Here</a> </p>
 
                     </div>
                     </div>

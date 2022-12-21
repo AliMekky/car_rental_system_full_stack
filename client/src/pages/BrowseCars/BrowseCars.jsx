@@ -17,15 +17,12 @@ import LocationDateTimeData from "../../components/LocationDateTimeData/Location
 function BrowseCars() {
   const [price, setPrice] = useState(0);
   const [edit, setEdit]  = useState(false);
-
   const [message,setMessage] = useState("");
-
   useEffect( () => {
     fetchItems();
 }, []);
 
 const fetchItems = async () => {
-  
   try{
     const res = await axios.get('http://localhost:4000/browseCar');
     console.log(res.data);
@@ -34,139 +31,27 @@ const fetchItems = async () => {
   catch(err){
     console.log(err);
   }
-
 };
-  
+
+
+// async function postInfo(e)
+// {
+//    e.preventDefault()
+//    const res = await axios.post('http://localhost:4000/trial', {
+//     firstName: 'Fred',
+//     lastName: 'Flintstone'
+
+//   })
+//   .then(function (response) {
+//     console.log(response);
+//   })
+//   .catch(function (error) {
+//     console.log(error);
+//   });
+// }
 
   return (
     <div>
-      
-      {/* <div class="parent">
-        <div class="child1">
-          <div class="form-check side">
-            <p class="title">Type</p>
-
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              Sport
-            </label>
-            <br />
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              SUV
-            </label>
-            <br />
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              MPV
-            </label>
-            <br />
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              Hatchback
-            </label>
-            <br />
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              Sedan
-            </label>
-          </div>
-          <div class="form-check side">
-            <p class="title">Capacity</p>
-
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              2 Person
-            </label>
-            <br />
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              4 person
-            </label>
-            <br />
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              6 person
-            </label>
-            <br />
-            <input
-              class="form-check-input option"
-              type="checkbox"
-              value=""
-              id="flexCheckDefault"
-            />
-            <label class="form-check-label option" for="flexCheckDefault">
-              8 or More
-            </label>
-          </div>
-          <div class="form-check side">
-            <p class="title">Price</p>
-
-            <input type="range" class="form-range" min="0" max="1000"></input>
-          </div>
-        </div>
-        <div class="child2">
-          <div class="container">
-            <div class="row">
-              <div class="col-sm">
-                <Card />
-              </div>
-              <div class="col-sm">
-                <Card />
-              </div>
-              <div class="col-sm ">
-                <Card />
-              </div>
-              <div class="col-sm ">
-                <Card />
-              </div>
-              
-
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       <div className="row cont">
           {/* <Navbar style = {{position : "fixed", top : "0", left : "0"}}/> */}
           <div class = "navbarB"><span class = "logo">GO CAR.</span></div>
