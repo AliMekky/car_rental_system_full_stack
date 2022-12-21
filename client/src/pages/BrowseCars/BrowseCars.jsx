@@ -54,7 +54,7 @@ const fetchItems = async () => {
     <div>
       <div className="row cont">
           {/* <Navbar style = {{position : "fixed", top : "0", left : "0"}}/> */}
-          <div class = "navbarB"><span class = "logo">GO CAR.</span></div>
+          <div class = "navbarB"><a href='/' class = "logo">GO CAR.</a></div>
           <div className="sidebar col-2">
               <div className = "categoryType"><DirectionsCarFilledIcon fontSize="small" style = {{"margin-right":"5px"}}/>TYPE</div>
               <FilterOption name = {"Sport"}/>

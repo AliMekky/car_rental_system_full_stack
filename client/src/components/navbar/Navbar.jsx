@@ -3,7 +3,7 @@ import "./Navbar.css"
 
 function Navbar() {
   return (
-    <div class = "navbar"><span class = "logo">GO CAR.</span></div>
+    <div class = "navbar"><a a href='/' class = "logo">GO CAR.</a></div>
   )
 }
 
