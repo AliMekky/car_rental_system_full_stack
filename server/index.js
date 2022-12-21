@@ -47,8 +47,24 @@ app.get("/customerReservations", (req, res) => {
     console.log('Reservations are: \n', result);
     res.send(result);
 })
-// console.log('Reservations are: \n', data);
+});
 
+app.get("/carReservations", (req, res) => {
+  let plate_id = req.query.plate_id;
+  let man = req.query.man;
+  let model = req.query.model;
+
+  let stat = "SELECT PICKUP_LOCATION,PICKUP_DATE,DROPOFF_LOCATION,DROPOFF_DATE,RESERVATION_DAY FROM RESERVATION NATURAL JOIN CAR WHERE PLATE_ID=\"" + plate_id + "\"" + "AND MANUFACTURER=\"" + man + "\"" + "AND MODEL=\"" +model + "\"";
+  console.log(stat);
+  db.query(stat, (err, rows) => {
+    if (!err) {
+        var result = JSON.parse(JSON.stringify(rows));
+    } else {
+        console.log(err)
+    }
+    console.log('Reservations are: \n', result);
+    res.send(result);
+})
 });
 
 const PORT = 4000; // backend routing port
