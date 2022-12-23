@@ -1,8 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Signup.css";
 import Navbar from "../../components/navbar/Navbar";
+import axios from "axios";
+
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone_number, setNumber] = useState("");
+  const [isAdmin, setIsAdmin] = useState(0);
+  let navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    axios
+      .post("http://localhost:4000/signup", {
+        name,
+        email,
+        password,
+        phone_number,
+        isAdmin,
+      })
+      .then((response) => {
+        if (response.data == "Welcome, user!") {
+          navigate("/");
+        }
+      });
+  };
+
   return (
     <div>
       <Navbar />
@@ -24,6 +51,7 @@ function Signup() {
                           id="typeEmailX-2"
                           class="form-control form-control-lg"
                           placeholder="Name"
+                          onChange={(event) => setName(event.target.value)}
                         />
                       </div>
                     </div>
@@ -31,10 +59,11 @@ function Signup() {
                     <div class="col">
                       <div class="form-outline mb-4">
                         <input
-                          type="number"
+                          type="text"
                           id="typePasswordX-2"
                           class="form-control form-control-lg"
                           placeholder="Phone Number"
+                          onChange={(event) => setNumber(event.target.value)}
                         />
                       </div>
                     </div>
@@ -47,6 +76,7 @@ function Signup() {
                           id="typeEmailX-2"
                           class="form-control form-control-lg"
                           placeholder="Email"
+                          onChange={(event) => setEmail(event.target.value)}
                         />
                       </div>
                     </div>
@@ -58,6 +88,7 @@ function Signup() {
                           id="typePasswordX-2"
                           class="form-control form-control-lg"
                           placeholder="Password"
+                          onChange={(event) => setPassword(event.target.value)}
                         />
                       </div>
                     </div>
@@ -69,10 +100,11 @@ function Signup() {
                   class="btn btn-primary btn-lg btn-block btn-disp"
                   style={{ width: "7rem" }}
                   type="submit"
+                  onClick={handleSubmit}
                 >
                   Continue
                 </button>
-                <br/>
+                <br />
                 <p class="footer p-disp">
                   Already a member? Login <a href="/Login">Here</a>{" "}
                 </p>

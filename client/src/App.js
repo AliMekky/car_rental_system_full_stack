@@ -18,6 +18,7 @@ import Payment from "./pages/Payment/Payment.jsx";
 import Home from "./pages/Home/Home";
 import Admin from "./pages/Admin/Admin.jsx";
 import Table from "./pages/Table/Table.jsx";
+import Error from "./pages/Error/Error.jsx";
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
         <Route path="/Signup" element ={<Signup/>}/>
         <Route path="/Admin" element={<Admin/>}></Route>
         <Route path="/Table" element ={<Table/>}/>
+        <Route path="/Error" element ={<Error/>}/>
+
 
       </Routes>
     </BrowserRouter>

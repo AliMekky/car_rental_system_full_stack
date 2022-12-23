@@ -2,26 +2,29 @@ import { React, useState } from "react";
 import "./Login.css";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  let navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     axios
-      .post("/login", {
-        email: email,
-        password: password,
-      })
+      .post("http://localhost:4000/login", {
+        email, password})
       .then((response) => {
-        // If the login is successful, redirect to the home page
-        console.log("Login Successful");
-      })
-      .catch((error) => {
-        // If the login fails, display an error message
-        console.log("Invalid email or password");
+        console.log(response.data);
+        if(response.data == "Welcome, admin!"){
+          navigate("/Admin");
+        }
+        else if (response.data == "Welcome, user!"){
+          navigate("/");
+        }
       });
+
   };
 
   return (

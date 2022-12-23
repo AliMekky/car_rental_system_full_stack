@@ -2,6 +2,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mysql = require("mysql");
+const session = require("express-session");
+const bcrypt = require("bcrypt");
+var auth = 0;
 
 //Create Connections
 const db = mysql.createConnection({
@@ -22,6 +25,132 @@ db.connect((err) => {
     throw err;
   }
   console.log("Connection done");
+});
+
+// set up express-session
+app.use(
+  session({
+    secret: "secret-key",
+    resave: false,
+    saveUninitialized: true,
+    rolling: true,
+    cookie: {
+      maxAge: 100 // 24 hours in milliseconds
+    }
+  })
+);
+
+// create a route to sign up a new user
+app.post("/signup", (req, res) => {
+  const { name, email, password, phone_number, isAdmin } = req.body;
+  // let hashedPassword = password;
+  bcrypt.hash(password, 10, function (err, hashedPassword) {
+    let str =
+      '"' +
+      name +
+      '",' +
+      '"' +
+      email +
+      '",' +
+      '"' +
+      hashedPassword +
+      '",' +
+      phone_number +
+      "," +
+      isAdmin;
+    console.log(str);
+    const query =
+      `INSERT INTO customer (name, email, password, phone_number, isadmin) VALUES (` +
+      str +
+      ")";
+    db.query(
+      query,
+      [name, email, hashedPassword, phone_number, isAdmin],
+      (err, result) => {
+        if (err) {
+          console.error(err);
+          res.send("Error signing up");
+          return;
+        }
+        res.redirect("/");
+      }
+    );
+  });
+});
+
+// create a route to log in a user
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  console.log(email, password);
+  const query = `SELECT * FROM customer WHERE email = ?`;
+  db.query(query, [email], (err, rows) => {
+    if (err) {
+      console.error(err);
+      res.send("Error logging in");
+      return;
+    }
+    if (rows.length === 0) {
+      res.send("Invalid email or password");
+      return;
+    }
+    let hash = "";
+    let gen = "";
+    gen = JSON.parse(JSON.stringify(rows[0]))["PASSWORD"];
+    console.log("True hash " + gen);
+    // bcrypt.hash(password, 10, function (err, hashedPassword) {
+    //   hash = hashedPassword;
+    //   console.log("password "+password);
+    //   console.log("Generated hash" + hash);
+    // gen = JSON.parse(JSON.stringify(rows[0]))["PASSWORD"];
+    // console.log("True hash " + gen);
+    // });
+    bcrypt.compare(password, gen, function (err, isMatch) {
+      if (err) throw err;
+      if (isMatch) {
+        console.log("correct password!");
+        var elem = JSON.parse(JSON.stringify(rows[0]));
+        console.log("True hash " + elem["PASSWORD"]);
+        console.log(elem["ISADMIN"]);
+        req.session.userId = elem["CUSTOMER_ID"];
+        req.session.isAdmin = elem["ISADMIN"];
+        auth = req.session.isAdmin;
+        console.log("auth: " + auth);
+        console.log("req.session.isAdmin: " + req.session.isAdmin);
+
+        if (req.session.isAdmin == 1) {
+          // redirect to the admin page if the user is an admin
+          console.log("Redirecting to admin route");
+          res.redirect("/Admin");
+        } else if (req.session.isAdmin == 0) {
+          // redirect to the home page if the user is not an admin
+          res.redirect("/");
+        }
+        res.send(req.session.isAdmin);
+      }
+    });
+  });
+});
+
+// create a middleware function to protect routes from non-admin users
+const checkAdmin = (req, res, next) => {
+  console.log("in checkAdmin sess " + req.session.isAdmin);
+
+  console.log("in checkAdmin " + auth);
+  if (!auth) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+  next();
+};
+
+// create a route that is protected by the middleware
+app.get("/Admin", checkAdmin, (req, res) => {
+  res.send("Welcome, admin!");
+});
+
+app.get("/", (req, res) => {
+  console.log(req.session.isAdmin);
+  res.send("Welcome, user!");
 });
 
 app.get("/browseCar", (req, res) => {
@@ -281,8 +410,6 @@ app.get("/search", (req, res) => {
     res.send(result);
   });
 });
-
-app.post("/login", (req, res) => {});
 
 const PORT = 4000; // backend routing port
 app.listen(PORT, () => {

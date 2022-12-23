@@ -1,7 +1,6 @@
 import React from "react";
 import "./Admin.css";
 import Checkbox from "@mui/material/Checkbox";
-
 import Navbar from "../../components/navbar/Navbar";
 import CustomerPopup from "./CustomerPopup";
 import CarPopup from "./CarPopup";
@@ -26,6 +25,19 @@ import {
 } from "react-router-dom";
 
 function Admin() {
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/Admin");
+      console.log("Successful");
+    } catch (err) {
+      navigate("/ERROR");
+    }
+  };
+
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
   /////for status on a specific date///
@@ -77,7 +89,7 @@ function Admin() {
         .get("http://localhost:4000/search", {
           params: {
             key: key,
-            selectedValues: selectedValues
+            selectedValues: selectedValues,
           },
         })
         .then((response) => {
@@ -101,21 +113,19 @@ function Admin() {
       <br />
       <div class="container">
         <div class="align-items-center">
-            
-        <form class="elem">
-                {options.map((option) => (
-                  <li key={option.value}>
-                    <input
-                      type="checkbox"
-                      value={option.value}
-                      checked={selectedValues.includes(option.value)}
-                      onChange={handleChange}
-                    />
-                    {option.label}
-                    
-                  </li>
-                ))}
-              </form>
+          <form class="elem">
+            {options.map((option) => (
+              <li key={option.value}>
+                <input
+                  type="checkbox"
+                  value={option.value}
+                  checked={selectedValues.includes(option.value)}
+                  onChange={handleChange}
+                />
+                {option.label}
+              </li>
+            ))}
+          </form>
         </div>
         <div class="row height d-flex justify-content-center align-items-center">
           <div class="col-md-8">
@@ -130,7 +140,7 @@ function Admin() {
                 placeholder="Search by car details, customer details or reservation day"
               />
               <div></div>
-              
+
               <button onClick={advanced} class="btn btn-primary">
                 Go
               </button>
