@@ -4,7 +4,9 @@ const cors = require("cors");
 const mysql = require("mysql");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
+
 var auth = 0;
+var sessionv;
 
 //Create Connections
 const db = mysql.createConnection({
@@ -18,6 +20,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+const redisClient = require("redis").createClient({
+  legacyMode: true,
+});
 
 // Connect to database
 db.connect((err) => {
@@ -27,16 +32,16 @@ db.connect((err) => {
   console.log("Connection done");
 });
 
-// set up express-session
+// configure the `express-session` middleware
 app.use(
   session({
-    secret: "secret-key",
-    resave: false,
-    saveUninitialized: true,
-    rolling: true,
+    secret: "my-secret", // a secret key to sign the session ID cookie
+    resave: false, // don't save the session if it hasn't been modified
+    saveUninitialized: false, // don't create a session if one doesn't already exist
     cookie: {
-      maxAge: 100 // 24 hours in milliseconds
-    }
+      secure: false, // set this to true if you are using https
+      maxAge: 1000, // the max age of the session cookie, in milliseconds
+    },
   })
 );
 
@@ -81,42 +86,30 @@ app.post("/signup", (req, res) => {
 // create a route to log in a user
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
+  // console.log(email, password);
   const query = `SELECT * FROM customer WHERE email = ?`;
   db.query(query, [email], (err, rows) => {
     if (err) {
       console.error(err);
-      res.send("Error logging in");
+      res.send("error");
       return;
     }
     if (rows.length === 0) {
-      res.send("Invalid email or password");
+      res.send("error");
       return;
     }
-    let hash = "";
-    let gen = "";
-    gen = JSON.parse(JSON.stringify(rows[0]))["PASSWORD"];
-    console.log("True hash " + gen);
-    // bcrypt.hash(password, 10, function (err, hashedPassword) {
-    //   hash = hashedPassword;
-    //   console.log("password "+password);
-    //   console.log("Generated hash" + hash);
-    // gen = JSON.parse(JSON.stringify(rows[0]))["PASSWORD"];
-    // console.log("True hash " + gen);
-    // });
+    let gen = JSON.parse(JSON.stringify(rows[0]))["PASSWORD"];
     bcrypt.compare(password, gen, function (err, isMatch) {
       if (err) throw err;
       if (isMatch) {
-        console.log("correct password!");
-        var elem = JSON.parse(JSON.stringify(rows[0]));
-        console.log("True hash " + elem["PASSWORD"]);
-        console.log(elem["ISADMIN"]);
-        req.session.userId = elem["CUSTOMER_ID"];
-        req.session.isAdmin = elem["ISADMIN"];
-        auth = req.session.isAdmin;
-        console.log("auth: " + auth);
-        console.log("req.session.isAdmin: " + req.session.isAdmin);
-
+        req.session.isAdmin = JSON.parse(JSON.stringify(rows[0]))["ISADMIN"];
+        req.session.name = JSON.parse(JSON.stringify(rows[0]))["NAME"];
+        sessionv = req.session;
+        // var elem = JSON.parse(JSON.stringify(rows[0]));
+        // req.session.isAdmin = elem["ISADMIN"];
+        // auth = req.session.isAdmin;
+        // req.session.user = JSON.stringify(rows[0]);
+        // console.log(req.session.user);
         if (req.session.isAdmin == 1) {
           // redirect to the admin page if the user is an admin
           console.log("Redirecting to admin route");
@@ -126,6 +119,8 @@ app.post("/login", (req, res) => {
           res.redirect("/");
         }
         res.send(req.session.isAdmin);
+      } else {
+        res.json({ title: "error", name: "" });
       }
     });
   });
@@ -133,10 +128,7 @@ app.post("/login", (req, res) => {
 
 // create a middleware function to protect routes from non-admin users
 const checkAdmin = (req, res, next) => {
-  console.log("in checkAdmin sess " + req.session.isAdmin);
-
-  console.log("in checkAdmin " + auth);
-  if (!auth) {
+  if (!sessionv.isAdmin) {
     res.status(401).send("Unauthorized");
     return;
   }
@@ -145,12 +137,20 @@ const checkAdmin = (req, res, next) => {
 
 // create a route that is protected by the middleware
 app.get("/Admin", checkAdmin, (req, res) => {
-  res.send("Welcome, admin!");
+  res.json({ title: "Welcome, admin!", name: sessionv.name });
 });
 
+
 app.get("/", (req, res) => {
-  console.log(req.session.isAdmin);
-  res.send("Welcome, user!");
+  if (sessionv) {
+    res.json({ title: "Welcome, user!", name: sessionv.name });
+  } else res.json({ title: "Welcome, guest!", name: "Guest" });
+  
+});
+
+app.get("/logout", (req, res) => {
+  sessionv = 0;
+  res.redirect("/");
 });
 
 app.get("/browseCar", (req, res) => {

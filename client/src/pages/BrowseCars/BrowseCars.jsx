@@ -26,7 +26,7 @@ const fetchItems = async () => {
   try{
     const res = await axios.get('http://localhost:4000/browseCar');
     console.log(res.data);
-    setMessage(res.data.name);
+    setMessage(res.data);
   }
   catch(err){
     console.log(err);
