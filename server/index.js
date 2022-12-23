@@ -79,6 +79,7 @@ app.post("/signup", (req, res) => {
         // }
         req.session.isAdmin = 0;
         req.session.name = name;
+        req.session.isLogged = 1;
         sessionv = req.session;
         res.redirect("/");
       }
@@ -107,6 +108,7 @@ app.post("/login", (req, res) => {
       if (isMatch) {
         req.session.isAdmin = JSON.parse(JSON.stringify(rows[0]))["ISADMIN"];
         req.session.name = JSON.parse(JSON.stringify(rows[0]))["NAME"];
+        req.session.isLogged = 1;
         sessionv = req.session;
         // var elem = JSON.parse(JSON.stringify(rows[0]));
         // req.session.isAdmin = elem["ISADMIN"];
@@ -140,14 +142,14 @@ const checkAdmin = (req, res, next) => {
 
 // create a route that is protected by the middleware
 app.get("/Admin", checkAdmin, (req, res) => {
-  res.json({ title: "Welcome, admin!", name: sessionv.name });
+  res.json({ title: "Welcome, admin!", name: sessionv.name, isLogged: sessionv.isLogged });
 });
 
 
 app.get("/", (req, res) => {
   if (sessionv) {
-    res.json({ title: "Welcome, user!", name: sessionv.name });
-  } else res.json({ title: "Welcome, guest!", name: "Guest" });
+    res.json({ title: "Welcome, user!", name: sessionv.name, isLogged: sessionv.isLogged});
+  } else res.json({ title: "Welcome, guest!", name: "Guest", isLogged:false });
   
 });
 
