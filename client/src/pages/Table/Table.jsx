@@ -47,6 +47,9 @@ function Table() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           experimentalFeatures={{ newEditingApi: true }}
+          components={{
+          Toolbar: CustomToolbar,
+        }}
         />
       </Box>
     </div>

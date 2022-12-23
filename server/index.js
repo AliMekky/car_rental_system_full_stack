@@ -220,6 +220,31 @@ app.get("/carReservations", (req, res) => {
     res.send(result);
   });
 });
+app.get("/dailyPayments", (req, res) => {
+  let startDate = req.query.startDate;
+  let endDate = req.query.endDate;
+  let startTime = req.query.startTime;
+  let endTime = req.query.endTime;
+  let start = startDate + " " + startTime;
+  let end = endDate + " " + endTime;
+
+  let stat =
+    " SELECT PICKUP_DATE as 'DATE',SUM(DATEDIFF(DROPOFF_DATE, PICKUP_DATE)* CAR.PRICE  ) as 'TOTAL PAYMENTS' FROM RESERVATION NATURAL  JOIN CAR WHERE PICKUP_DATE>'" +
+    start +
+    "' AND DROPOFF_DATE<'" +
+    end +
+    "'  GROUP BY (DATE(PICKUP_DATE))";
+  console.log(stat);
+  db.query(stat, (err, rows) => {
+    if (!err) {
+      var result = JSON.parse(JSON.stringify(rows));
+    } else {
+      console.log(err);
+    }
+    console.log("Reservations are: \n", result);
+    res.send(result);
+  });
+});
 
 app.get("/reservations", (req, res) => {
   let startDate = req.query.startDate;
@@ -236,6 +261,33 @@ app.get("/reservations", (req, res) => {
     "' AND DROPOFF_DATE<'" +
     end +
     "'";
+  console.log(stat);
+  db.query(stat, (err, rows) => {
+    if (!err) {
+      var result = JSON.parse(JSON.stringify(rows));
+    } else {
+      console.log(err);
+    }
+    console.log("Reservations are: \n", result);
+    res.send(result);
+  });
+});
+app.get("/CarStatus", (req, res) => {
+  let start = req.query.statDate 
+
+
+  let stat =  " SELECT STATUS,car.MANUFACTURER, car.MODEL ,car.YEAR ,car.TYPE,PLATE_ID  FROM status_logger NATURAL JOIN CAR WHERE abs(datediff(START_DATE,'" +
+  start +
+  "' )) = ( select  min( abs(datediff(START_DATE,'" +
+  start +
+  "'  )) ) from status_logger ) UNION SELECT STATUS,car.MANUFACTURER, car.MODEL ,car.YEAR ,car.TYPE,PLATE_ID FROM status_logger NATURAL JOIN CAR where START_DATE < '" +
+  start +
+  "' and car.PLATE_ID not in ( SELECT PLATE_ID FROM status_logger NATURAL JOIN CAR where abs(datediff(START_DATE,'" +
+  start +
+  "')) = ( select  min( abs(datediff(START_DATE,'" +
+  start +
+  "')) ) from status_logger ) )";
+
   console.log(stat);
   db.query(stat, (err, rows) => {
     if (!err) {

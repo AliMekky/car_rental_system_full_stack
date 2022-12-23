@@ -58,6 +58,42 @@ function DatTimePopup(props) {
         });
     }
   };
+  const dailyPayments = (event) => {
+
+
+    if (startDate != "" && endDate != "" && startTime !="" && endTime!="") {
+      axios
+        .get("http://localhost:4000/dailyPayments", {
+          params: {
+            startDate: startDate,
+            startTime: startTime,
+            endDate: endDate,
+            endTime: endTime,
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.length == 0) {
+            setError("no entry");
+            return;
+          }
+          navigate("/Table", {
+            state: {
+              info: response.data,
+              title:
+                "Information about all Daily Payments from " +
+                startDate +
+                " " +
+                startTime +
+                " to " +
+                endDate +
+                " " +
+                endTime,
+            },
+          });
+        });
+    }
+  };
   return (
     <div className="popup">
       <div className=" container   py-5   ">
@@ -104,7 +140,7 @@ function DatTimePopup(props) {
                       class="btn btn-primary btn-size btn-lg btn-block"
                       type="submit"
                       style={{ width: "30%" }}
-                      onClick={reservations}
+                      onClick={props.func== "date" ?( reservations):(dailyPayments)}
                     >
                       Generate
                     </button>

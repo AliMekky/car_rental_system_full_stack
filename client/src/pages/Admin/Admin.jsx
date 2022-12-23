@@ -113,34 +113,37 @@ function Admin() {
       <br />
       <div class="container">
         <div class="align-items-center">
-          <form class="elem">
-            {options.map((option) => (
-              <li key={option.value}>
-                <input
-                  type="checkbox"
-                  value={option.value}
-                  checked={selectedValues.includes(option.value)}
-                  onChange={handleChange}
-                />
-                {option.label}
-              </li>
-            ))}
-          </form>
+            
+        <form class="elem form-check">
+                {options.map((option) => (
+                  <li key={option.value}>
+                    <input
+                      type="checkbox"
+                      className="check-input"
+                      value={option.value}
+                      checked={selectedValues.includes(option.value)}
+                      onChange={handleChange}
+                    />
+                    {option.label}
+                    
+                  </li>
+                ))}
+              </form>
         </div>
-        <div class="row height d-flex justify-content-center align-items-center">
-          <div class="col-md-8">
-            <div class="search">
-              <i class="fa fa-search"></i>
+        <div className="row height d-flex justify-content-center align-items-center">
+          <div className="col-md-8">
+            <div className="search">
+              <i className="fa fa-search"></i>
               <input
                 onChange={(e) => {
                   setKey(e.target.value);
                 }}
                 type="text"
-                class="form-control"
+                className="form-control"
                 placeholder="Search by car details, customer details or reservation day"
               />
               <div></div>
-
+              
               <button onClick={advanced} class="btn btn-primary">
                 Go
               </button>
@@ -148,6 +151,7 @@ function Admin() {
           </div>
         </div>
       </div>
+      <br />
       <div className=" container  justify-content-center align-items-center ">
         <div className="row justify-content-center">
           <div className=" col-8 col-md-8 col-sm-8 col-lg-4 col-xl-4">
@@ -289,12 +293,14 @@ function Admin() {
           title={
             "Generate a report on all reservations within a specific period"
           }
+          func={"date"}
         />
       )}
       {PaymentOpen && (
         <DatTimePopup
           close={handleClose}
           title={"Generate a report on daily payments within a specific period"}
+          func={"payment"}
         />
       )}
       {StatusOpen && (
