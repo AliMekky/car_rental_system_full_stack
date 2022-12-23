@@ -74,8 +74,8 @@ app.post("/signup", (req, res) => {
       (err, result) => {
         if (err) {
           console.error(err);
-          res.send("Error signing up");
-          return;
+            res.json({ title: "error", name: "" });
+            return;
         }
         res.redirect("/");
       }

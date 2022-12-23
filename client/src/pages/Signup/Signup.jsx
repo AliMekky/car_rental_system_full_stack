@@ -11,23 +11,33 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [phone_number, setNumber] = useState("");
   const [isAdmin, setIsAdmin] = useState(0);
+  const [error, setError] = useState(0);
+
   let navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    axios
-      .post("http://localhost:4000/signup", {
-        name,
-        email,
-        password,
-        phone_number,
-        isAdmin,
-      })
-      .then((response) => {
-        if (response.data == "Welcome, user!") {
-          navigate("/");
-        }
-      });
+    if (name != "" && password != "" && phone_number != "" && email != "") {
+      axios
+        .post("http://localhost:4000/signup", {
+          name,
+          email,
+          password,
+          phone_number,
+          isAdmin,
+        })
+        .then((response) => {
+          if(response.data.title === "Welcome, user!") {
+            navigate("/", {
+              state: {
+                name: response.data.name,
+              },
+            });
+          } else if (response.data.title === "error") {
+            setError(1);
+          }
+        });
+    }
   };
 
   return (
@@ -53,6 +63,7 @@ function Signup() {
                           placeholder="Name"
                           onChange={(event) => setName(event.target.value)}
                         />
+                        {name == "" && <span> This field is required. </span>}
                       </div>
                     </div>
 
@@ -65,6 +76,9 @@ function Signup() {
                           placeholder="Phone Number"
                           onChange={(event) => setNumber(event.target.value)}
                         />
+                        {phone_number == "" && (
+                          <span> This field is required. </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -78,6 +92,7 @@ function Signup() {
                           placeholder="Email"
                           onChange={(event) => setEmail(event.target.value)}
                         />
+                        {email == "" && <span> This field is required. </span>}
                       </div>
                     </div>
 
@@ -90,10 +105,12 @@ function Signup() {
                           placeholder="Password"
                           onChange={(event) => setPassword(event.target.value)}
                         />
+                        {email == "" && <span> This field is required. </span>}
                       </div>
                     </div>
                   </div>
                 </div>
+                {error == 1 && <span> This email already exists.</span>}
 
                 <hr />
                 <button
