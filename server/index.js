@@ -71,12 +71,15 @@ app.post("/signup", (req, res) => {
     db.query(
       query,
       [name, email, hashedPassword, phone_number, isAdmin],
-      (err, result) => {
-        if (err) {
-          console.error(err);
-            res.json({ title: "error", name: "" });
-            return;
-        }
+      (err, rows) => {
+        // if (!result) {
+        //     console.error("error in insert");
+        //     res.json({ title: "error", name: "" });
+        //     return;
+        // }
+        req.session.isAdmin = 0;
+        req.session.name = name;
+        sessionv = req.session;
         res.redirect("/");
       }
     );
