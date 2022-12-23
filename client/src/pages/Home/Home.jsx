@@ -12,7 +12,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 
 function Home() {
-  const [name, setName] = useState("");
+  const [name, setName] = useState("Guest");
   const [isLogged, setIsLogged] = useState(0);
 
   useEffect(() => {
