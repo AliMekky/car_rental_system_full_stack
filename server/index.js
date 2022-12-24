@@ -1,13 +1,17 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const mysql = require("mysql");
-const session = require("express-session");
+var session = require('express-session');
+var bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
+// const redis = require('redis');
+// const redisClient = redis.createClient();
+// const redisStore = require('connect-redis')(session);
 
 var auth = 0;
 var sessionv;
-
+//install redis-server urgently!!
+// https://github.com/microsoftarchive/redis/blob/win-3.0.504/Redis%20on%20Windows%20Release%20Notes.md
 //Create Connections
 const db = mysql.createConnection({
   host: "localhost",
@@ -17,12 +21,12 @@ const db = mysql.createConnection({
 });
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
+// redisClient.on('error', (err) => {
+//   console.log('Redis error: ', err);
+// });
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
-const redisClient = require("redis").createClient({
-  legacyMode: true,
-});
 
 // Connect to database
 db.connect((err) => {
@@ -33,18 +37,21 @@ db.connect((err) => {
 });
 
 // configure the `express-session` middleware
+//     store: new redisStore({ host: 'localhost', port: 6379, client: redisClient}),
+
 app.use(
   session({
-    secret: "my-secret", // a secret key to sign the session ID cookie
+    secret: "mySecret",
     resave: false, // don't save the session if it hasn't been modified
     saveUninitialized: false, // don't create a session if one doesn't already exist
     cookie: {
-      secure: false, // set this to true if you are using https
-      maxAge: 1000, // the max age of the session cookie, in milliseconds
+      secure: false, // if true: only transmit cookie over https
+      httpOnly: true, // if true: prevents client side JS from reading the cookie
+      maxAge: 1000 * 60 * 30, // session max age in milliseconds
+      sameSite: 'lax' // make sure sameSite is not non
     },
   })
 );
-
 // create a route to sign up a new user
 app.post("/signup", (req, res) => {
   const { name, email, password, phone_number, isAdmin } = req.body;
@@ -87,8 +94,20 @@ app.post("/signup", (req, res) => {
   });
 });
 
+
+app.get("/", (req, res) => {
+  // console.log("After using redis store: "+req.session.isAdmin);
+  // req.session.wtf="wow";
+  // console.log("Debugging 101: req.session.wtf is " + req.session.wtf);
+  if (sessionv) {
+    res.json({ title: "Welcome, user!", name: sessionv.name, isLogged: sessionv.isLogged});
+  } else res.json({ title: "Welcome, guest!", name: "Guest", isLogged:false });
+  
+});
+
 // create a route to log in a user
 app.post("/login", (req, res) => {
+  console.log("Debugging 101 in login: req.session.wtf is " + req.session.wtf);
   const { email, password } = req.body;
   // console.log(email, password);
   const query = `SELECT * FROM customer WHERE email = ?`;
@@ -107,6 +126,7 @@ app.post("/login", (req, res) => {
       if (err) throw err;
       if (isMatch) {
         req.session.isAdmin = JSON.parse(JSON.stringify(rows[0]))["ISADMIN"];
+        // console.log("Original req.session: "+req.session.isAdmin);
         req.session.name = JSON.parse(JSON.stringify(rows[0]))["NAME"];
         req.session.isLogged = 1;
         sessionv = req.session;
@@ -146,12 +166,6 @@ app.get("/Admin", checkAdmin, (req, res) => {
 });
 
 
-app.get("/", (req, res) => {
-  if (sessionv) {
-    res.json({ title: "Welcome, user!", name: sessionv.name, isLogged: sessionv.isLogged});
-  } else res.json({ title: "Welcome, guest!", name: "Guest", isLogged:false });
-  
-});
 
 app.get("/logout", (req, res) => {
   sessionv = 0;
