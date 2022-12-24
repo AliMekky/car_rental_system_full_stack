@@ -120,7 +120,7 @@ function Admin() {
                   <li key={option.value}>
                     <input
                       type="checkbox"
-                      className="check-input"
+                      className="form-check-input"
                       value={option.value}
                       checked={selectedValues.includes(option.value)}
                       onChange={handleChange}

@@ -281,20 +281,10 @@ app.get("/CarStatus", (req, res) => {
   let start = req.query.statDate 
 
 
-  let stat =  " SELECT STATUS,car.MANUFACTURER, car.MODEL ,car.YEAR ,car.TYPE,PLATE_ID  FROM status_logger NATURAL JOIN CAR WHERE abs(datediff(START_DATE,'" +
-  start +
-  "' )) = ( select  min( abs(datediff(START_DATE,'" +
-  start +
-  "'  )) ) from status_logger ) UNION SELECT STATUS,car.MANUFACTURER, car.MODEL ,car.YEAR ,car.TYPE,PLATE_ID FROM status_logger NATURAL JOIN CAR where START_DATE < '" +
-  start +
-  "' and car.PLATE_ID not in ( SELECT PLATE_ID FROM status_logger NATURAL JOIN CAR where abs(datediff(START_DATE,'" +
-  start +
-  "')) = ( select  min( abs(datediff(START_DATE,'" +
-  start +
-  "')) ) from status_logger ) )";
+  let stat =  "with temp as (SELECT STATUS,PLATE_ID, Row_number() OVER (PARTITION BY PLATE_ID order by abs(datediff(START_DATE,?)) ASC) as row FROM status_logger) SELECT PLATE_ID,STATUS,car.MANUFACTURER,car.MODEL,car.YEAR,car.TYPE from temp  NATURAL JOIN car WHERE row = 1";
 
   console.log(stat);
-  db.query(stat, (err, rows) => {
+  db.query(stat,[start] ,(err, rows) => {
     if (!err) {
       var result = JSON.parse(JSON.stringify(rows));
     } else {
