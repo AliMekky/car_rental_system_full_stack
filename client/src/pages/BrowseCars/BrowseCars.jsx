@@ -18,7 +18,6 @@ import {
   Routes,
   Route,
   Link,
-  useNavigate,
 } from "react-router-dom";
 
 function BrowseCars() {
@@ -79,8 +78,8 @@ function BrowseCars() {
               console.log(response.data);
               // setCountries(response.data);
               // console.log(countries[0]);
-              
-            setCars(response.data);
+
+              setCars(response.data);
               // console.log(response.data);;
             });
         } catch (error) {
@@ -401,11 +400,7 @@ function BrowseCars() {
                 <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/>
                 <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/> */}
             {cars.map((car) => (
-              <ReactCard
-                img={car.IMAGE}
-                name={car.MANUFACTURER + "-" + car.MODEL}
-                price={car.PRICE}
-              />
+              <ReactCard carData={car} />
             ))}
           </div>
         </div>

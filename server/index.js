@@ -156,7 +156,6 @@ app.post("/updateData", (req, res) => {
 
 // create a route to log in a user
 app.post("/login", (req, res) => {
-  // console.log("Debugging 101 in login: req.session.wtf is " + req.session.wtf);
   const { email, password } = req.body;
   // console.log(email, password);
   const query = `SELECT * FROM customer WHERE email = ?`;
