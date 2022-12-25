@@ -25,22 +25,11 @@ import {
 } from "react-router-dom";
 
 function Admin() {
-  useEffect(() => {
-    fetchItems();
-  }, []);
 
-
-  const fetchItems = async () => {
-    try {
-      const res = await axios.get("http://localhost:4000/Admin");
-      console.log("Successful");
-    } catch (err) {
-      navigate("/ERROR");
-    }
-  };
-
+  const [name, setName] = useState("Guest"); // use states for navbar
+  const [isLogged, setIsLogged] = useState(0);
+  const [Logged, setLogged] = useState(0);
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
   /////for status on a specific date///
   const [StatusOpen, setStatus] = useState(false);
   ////// for any car on a specific period///
@@ -55,7 +44,45 @@ function Admin() {
   const [NewCarOPen, setNewCar] = useState(false);
   //// for update status///
   const [UpdatStatusOPen, setUpdateStatus] = useState(false);
+  const [key, setKey] = useState("");
+  const navigate = useNavigate();
+  const [selectedValues, setSelectedValues] = useState([]);
+  const options = [
+    { value: "car", label: "Car" },
+    { value: "customer", label: "Customer" },
+    { value: "day", label: "Reservation Day" },
+  ];
+  
+  
+  useEffect(() => {
+    fetchItems();
+  }, []);
+  const fetchItems = async () => {
+    try {
+      const res = await axios
+        .get("http://localhost:4000/Admin")
+        .then((response) => {
+          console.log("Successful");
+          setName(response.data.name);
+          setIsLogged(response.data.isLogged);
+        });
+    } catch (err) {
+      navigate("/ERROR");
+    }
+  };
+  const end = () => {
+    try {
+      const res = axios.get("http://localhost:4000/logout").then((response) => {
+        setLogged(response.data.isLogged);
+        console.log(Logged);
+        !Logged && navigate("/");
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
+ 
   const handleClose = () => {
     setStatus(false);
     setCar(false);
@@ -66,14 +93,6 @@ function Admin() {
     setUpdateStatus(false);
   };
 
-  const [key, setKey] = useState("");
-  const navigate = useNavigate();
-  const [selectedValues, setSelectedValues] = useState([]);
-  const options = [
-    { value: "car", label: "Car" },
-    { value: "customer", label: "Customer" },
-    { value: "day", label: "Reservation Day" },
-  ];
   // Handle changes to the checkbox list
   const handleChange = (event) => {
     const { value, checked } = event.target;
@@ -110,26 +129,24 @@ function Admin() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar name={name} isLogged={isLogged} end={end} show={true}/>
       <br />
       <div class="container">
         <div class="align-items-center">
-            
-        <form class="elem form-check">
-                {options.map((option) => (
-                  <li key={option.value}>
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      value={option.value}
-                      checked={selectedValues.includes(option.value)}
-                      onChange={handleChange}
-                    />
-                    {option.label}
-                    
-                  </li>
-                ))}
-              </form>
+          <form class="elem form-check">
+            {options.map((option) => (
+              <li key={option.value}>
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  value={option.value}
+                  checked={selectedValues.includes(option.value)}
+                  onChange={handleChange}
+                />
+                {option.label}
+              </li>
+            ))}
+          </form>
         </div>
         <div className="row height d-flex justify-content-center align-items-center">
           <div className="col-md-8">
@@ -144,7 +161,7 @@ function Admin() {
                 placeholder="Search by car details, customer details or reservation day"
               />
               <div></div>
-              
+
               <button onClick={advanced} class="btn btn-primary">
                 Go
               </button>

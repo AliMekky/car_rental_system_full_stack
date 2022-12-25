@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
-var session = require('express-session');
-var bodyParser = require('body-parser');
+var session = require("express-session");
+var bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 // const redis = require('redis');
 // const redisClient = redis.createClient();
@@ -10,6 +10,19 @@ const bcrypt = require("bcrypt");
 
 var auth = 0;
 var sessionv;
+global.data = {
+  city: "",
+  country: "",
+  startDate: "",
+  endDate: "",
+  startTime: "",
+  endTime: "",
+  startLocation: "",
+  endLocation: "",
+  startCity: "",
+  endCity: "",
+  cities: [],
+};
 //install redis-server urgently!!
 // https://github.com/microsoftarchive/redis/blob/win-3.0.504/Redis%20on%20Windows%20Release%20Notes.md
 //Create Connections
@@ -48,7 +61,7 @@ app.use(
       secure: false, // if true: only transmit cookie over https
       httpOnly: true, // if true: prevents client side JS from reading the cookie
       maxAge: 1000 * 60 * 30, // session max age in milliseconds
-      sameSite: 'lax' // make sure sameSite is not non
+      sameSite: "lax", // make sure sameSite is not non
     },
   })
 );
@@ -94,20 +107,55 @@ app.post("/signup", (req, res) => {
   });
 });
 
-
 app.get("/", (req, res) => {
   // console.log("After using redis store: "+req.session.isAdmin);
   // req.session.wtf="wow";
   // console.log("Debugging 101: req.session.wtf is " + req.session.wtf);
   if (sessionv) {
-    res.json({ title: "Welcome, user!", name: sessionv.name, isLogged: sessionv.isLogged});
-  } else res.json({ title: "Welcome, guest!", name: "Guest", isLogged:false });
-  
+    res.json({
+      title: "Welcome, user!",
+      name: sessionv.name,
+      isLogged: sessionv.isLogged,
+      city: global.data.city,
+      country: global.data.country,
+      startDate: global.data.startDate,
+      endDate: global.data.endDate,
+      startTime: global.data.startTime,
+      endTime: global.data.endTime,
+      startLocation: global.data.startLocation,
+      startCity: global.data.startCity,
+      endLocation: global.data.endLocation,
+      endCity: global.data.endCity,
+      cities: global.data.cities,
+    });
+  } else
+    res.json({
+      title: "Welcome, guest!",
+      name: "Guest",
+      isLogged: false,
+      city: global.data.city,
+    });
+});
+
+app.post("/updateData", (req, res) => {
+  const {
+    startDate,
+    startTime,
+    startLocation,
+    cities,
+    endDate,
+    endTime,
+    endLocation,
+  } = req.body;
+  global.data.startLocation = startLocation;
+  global.data.endLocation = endLocation;
+  global.data.startCity = cities[startLocation].CITY;
+  global.data.endCity = cities[endLocation].CITY;
+  global.data.cities = cities;
 });
 
 // create a route to log in a user
 app.post("/login", (req, res) => {
-  console.log("Debugging 101 in login: req.session.wtf is " + req.session.wtf);
   const { email, password } = req.body;
   // console.log(email, password);
   const query = `SELECT * FROM customer WHERE email = ?`;
@@ -129,7 +177,14 @@ app.post("/login", (req, res) => {
         // console.log("Original req.session: "+req.session.isAdmin);
         req.session.name = JSON.parse(JSON.stringify(rows[0]))["NAME"];
         req.session.isLogged = 1;
+        // req.session.city = "";
+        // req.session.country = "";
+        // req.session.startDate = "";
+        // req.session.endDate = "";
+        // req.session.startTime = "";
+        // req.session.endTime = "";
         sessionv = req.session;
+        console.log("this is the previous city: " + sessionv.city);
         // var elem = JSON.parse(JSON.stringify(rows[0]));
         // req.session.isAdmin = elem["ISADMIN"];
         // auth = req.session.isAdmin;
@@ -162,10 +217,12 @@ const checkAdmin = (req, res, next) => {
 
 // create a route that is protected by the middleware
 app.get("/Admin", checkAdmin, (req, res) => {
-  res.json({ title: "Welcome, admin!", name: sessionv.name, isLogged: sessionv.isLogged });
+  res.json({
+    title: "Welcome, admin!",
+    name: sessionv.name,
+    isLogged: sessionv.isLogged,
+  });
 });
-
-
 
 app.get("/logout", (req, res) => {
   sessionv = 0;
@@ -180,64 +237,71 @@ app.get("/logout", (req, res) => {
 //   });
 // });
 
-app.get("/getCars",(req, res) => {
+app.get("/getCars", (req, res) => {
   let city = req.query.city;
   let country = req.query.country;
   let startDate = req.query.startDate;
   let endDate = req.query.endDate;
   let startTime = req.query.startTime;
   let endTime = req.query.endTime;
-  console.log("get car");
-  console.log(req.query);
+  global.data.city = city;
+  global.data.country = country;
+  global.data.startDate = startDate;
+  global.data.endDate = endDate;
+  global.data.startTime = startTime;
+  global.data.endTime = endTime;
 
-  if(city && country && startDate && endDate && startTime && endTime){
+  console.log("get city in browse");
+  console.log(global.data.city);
+
+  if (city && country && startDate && endDate && startTime && endTime) {
     let start = startDate + " " + startTime;
     let end = endDate + " " + endTime;
-    db.query("SELECT PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?))",[city, end, start],(err,rows)=>{
-      if(!err){
-        var result = JSON.parse(JSON.stringify(rows));
-        console.log(result);
+    db.query(
+      "SELECT PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?))",
+      [city, end, start],
+      (err, rows) => {
+        if (!err) {
+          var result = JSON.parse(JSON.stringify(rows));
+          console.log(result);
+        } else {
+          console.log(err);
+        }
+        res.send(result);
       }
-      else{
-        console.log(err);
-      }
-      res.send(result);
-    })
+    );
   }
-
 });
 
-  
-
-
-app.get("/getCountries",(req,res)=>{
-  let stat = "SELECT DISTINCT COUNTRY FROM OFFICE"
-  db.query(stat,(err,rows)=>{
-    if(!err){
+app.get("/getCountries", (req, res) => {
+  let stat = "SELECT DISTINCT COUNTRY FROM OFFICE";
+  db.query(stat, (err, rows) => {
+    if (!err) {
       var result = JSON.parse(JSON.stringify(rows));
-    }
-    else{
+    } else {
       console.log(err);
     }
     res.send(result);
-  })
+  });
 });
 
-app.get("/getCities",(req,res)=>{
+app.get("/getCities", (req, res) => {
   country = req.query.country;
-  if(country){
-    db.query('SELECT CITY FROM OFFICE WHERE COUNTRY = ?',[country.COUNTRY],(err,rows)=>{
-      if(!err){
-        var result = JSON.parse(JSON.stringify(rows));
+  if (country) {
+    db.query(
+      "SELECT CITY FROM OFFICE WHERE COUNTRY = ?",
+      [country.COUNTRY],
+      (err, rows) => {
+        if (!err) {
+          var result = JSON.parse(JSON.stringify(rows));
+        } else {
+          console.log(err);
+        }
+        res.send(result);
       }
-      else{
-        console.log(err);
-      }
-      res.send(result);
-    })
+    );
   }
-})
-
+});
 
 //////////Admin routes//////////////////
 app.get("/customerReservations", (req, res) => {
@@ -352,13 +416,13 @@ app.get("/reservations", (req, res) => {
   });
 });
 app.get("/CarStatus", (req, res) => {
-  let start = req.query.statDate 
+  let start = req.query.statDate;
 
-
-  let stat =  "with temp as (SELECT STATUS,PLATE_ID, Row_number() OVER (PARTITION BY PLATE_ID order by abs(datediff(START_DATE,?)) ASC) as row FROM status_logger) SELECT PLATE_ID,STATUS,car.MANUFACTURER,car.MODEL,car.YEAR,car.TYPE from temp  NATURAL JOIN car WHERE row = 1";
+  let stat =
+    "with temp as (SELECT STATUS,PLATE_ID, Row_number() OVER (PARTITION BY PLATE_ID order by abs(datediff(START_DATE,?)) ASC) as row FROM status_logger) SELECT PLATE_ID,STATUS,car.MANUFACTURER,car.MODEL,car.YEAR,car.TYPE from temp  NATURAL JOIN car WHERE row = 1";
 
   console.log(stat);
-  db.query(stat,[start] ,(err, rows) => {
+  db.query(stat, [start], (err, rows) => {
     if (!err) {
       var result = JSON.parse(JSON.stringify(rows));
     } else {
@@ -536,4 +600,3 @@ const PORT = 4000; // backend routing port
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
-

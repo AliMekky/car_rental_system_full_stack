@@ -37,7 +37,7 @@ function Table() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar show={false}/>
       <h1>{name}</h1>
       <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid

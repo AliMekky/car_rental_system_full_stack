@@ -12,6 +12,8 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    let history = document.referrer;
+    console.log(history);
     if (email != "" && password != "") {
       axios
         .post("http://localhost:4000/login", {
@@ -22,11 +24,37 @@ function Login() {
           if (response.data.title === "Welcome, admin!") {
             navigate("/Admin");
           } else if (response.data.title === "Welcome, user!") {
-            navigate("/", {
-              state: {
-                name: response.data.name,
-              },
-            });
+            if (String(history) === "http://localhost:3000/BrowseCars") {
+              console.log("coming from browse page");
+              console.log(response.data);
+              navigate("/BrowseCars", {
+                state: {
+                  city: response.data.city,
+                  country: response.data.country,
+                  startDate: response.data.startDate,
+                  endDate: response.data.endDate,
+                  startTime: response.data.startTime,
+                  endTime: response.data.endTime,
+                  startLocation: response.data.startLocation,
+                  endLocation: response.data.endLocation,
+                  cities: response.data.cities,
+                  name: response.data.name,
+                  isLogged: response.data.isLogged
+                },
+              });
+            } else {
+              navigate("/", {
+                state: {
+                  name: response.data.name,
+                },
+              });
+            }
+            // navigate(-1,{
+            //     state: {
+            //       name: response.data.name,
+            //       new: "hi this is us"
+            //     },
+            //   });
           } else if (response.data.title === "error") {
             setError(1);
           }
@@ -36,7 +64,7 @@ function Login() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar show={false} />
       <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-12 col-md-8 col-lg-6 col-xl-5">
