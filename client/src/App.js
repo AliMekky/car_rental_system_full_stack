@@ -31,6 +31,7 @@ function App() {
         <Route path="/Admin" element={<Admin/>}></Route>
         <Route path="/Table" element ={<Table/>}/>
         <Route path="/Error" element ={<Error/>}/>
+        <Route path = "/CarDetail" element = {<CarDetail/>}/>
 
 
       </Routes>

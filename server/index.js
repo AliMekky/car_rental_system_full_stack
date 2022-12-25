@@ -156,14 +156,74 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-app.get("/browseCar", (req, res) => {
-  res.json({
-    name: "BMW my car",
-    msg: "This is my first tweet!",
-    username: "codrkai",
-  });
+// app.get("/browseCar", (req, res) => {
+//   res.json({
+//     name: "BMW my car",
+//     msg: "This is my first tweet!",
+//     username: "codrkai",
+//   });
+// });
+
+app.get("/getCars",(req, res) => {
+  let city = req.query.city;
+  let country = req.query.country;
+  let startDate = req.query.startDate;
+  let endDate = req.query.endDate;
+  let startTime = req.query.startTime;
+  let endTime = req.query.endTime;
+  console.log("get car");
+  console.log(req.query);
+
+  if(city && country && startDate && endDate && startTime && endTime){
+    let start = startDate + " " + startTime;
+    let end = endDate + " " + endTime;
+    db.query("SELECT PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?))",[city, end, start],(err,rows)=>{
+      if(!err){
+        var result = JSON.parse(JSON.stringify(rows));
+        console.log(result);
+      }
+      else{
+        console.log(err);
+      }
+      res.send(result);
+    })
+  }
+
 });
 
+  
+
+
+app.get("/getCountries",(req,res)=>{
+  let stat = "SELECT DISTINCT COUNTRY FROM OFFICE"
+  db.query(stat,(err,rows)=>{
+    if(!err){
+      var result = JSON.parse(JSON.stringify(rows));
+    }
+    else{
+      console.log(err);
+    }
+    res.send(result);
+  })
+});
+
+app.get("/getCities",(req,res)=>{
+  country = req.query.country;
+  if(country){
+    db.query('SELECT CITY FROM OFFICE WHERE COUNTRY = ?',[country.COUNTRY],(err,rows)=>{
+      if(!err){
+        var result = JSON.parse(JSON.stringify(rows));
+      }
+      else{
+        console.log(err);
+      }
+      res.send(result);
+    })
+  }
+})
+
+
+//////////Admin routes//////////////////
 app.get("/customerReservations", (req, res) => {
   let name = req.query.name;
   let email = req.query.email;
@@ -470,3 +530,4 @@ const PORT = 4000; // backend routing port
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+

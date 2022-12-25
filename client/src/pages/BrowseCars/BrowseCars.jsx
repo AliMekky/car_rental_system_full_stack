@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 import axios from "axios";
-
+import { useLocation } from "react-router-dom";
 import "./BrowseCars.css";
 import Navbar from "../../components/navbar/Navbar";
 import Card from "../../components/Card/Card";
@@ -15,40 +15,178 @@ import ReactCard from "../../components/ReactCard/ReactCard";
 import LocationDateTimeData from "../../components/LocationDateTimeData/LocationDateTimeData";
 
 function BrowseCars() {
+  const [startDate, setstartDate] = useState("");
+  const [startTime, setstartTime] = useState("");
+  const [endDate, setendDate] = useState("");
+  const [endTime, setendTime] = useState("");
+  const [startLocation, setstartLocation] = useState("");
+  const [country, setCountry] = useState("");
+  const [countries,setCountries] = useState([]);
+  const [cities,setCities] = useState([]);
+  const [endLocation, setendLocation] = useState("");
+  const [getCar,setGetCar] = useState(false);
+  const [cars,setCars] = useState([]);
+  const [startCity,setStartCity] = useState("");
+  const [endCity,setEndCity] = useState("");
+  const [error, setError] = useState("");
+  const location = useLocation();
   const [price, setPrice] = useState(0);
   const [edit, setEdit]  = useState(false);
   const [message,setMessage] = useState("");
-  useEffect( () => {
-    fetchItems();
-}, []);
 
-const fetchItems = async () => {
-  try{
-    const res = await axios.get('http://localhost:4000/browseCar');
-    console.log(res.data);
-    setMessage(res.data);
+  useEffect(()=>{
+      setstartDate(location.state.startDate);
+      setstartTime(location.state.startTime);
+      setstartLocation(location.state.startLocation);
+      setendDate(location.state.endDate);
+      setendTime(location.state.endTime);
+      setendLocation(location.state.endLocation);
+      setCountry(location.country);
+      setCities(location.state.cities);
+      setStartCity(location.state.cities[location.state.startLocation].CITY);
+      setEndCity(location.state.cities[location.state.endLocation].CITY);
+      
+      console.log(location.state);
+
+      // setGetCar(!getCar);
+      async function getCars(){
+        try {
+          const res =  await axios.get("http://localhost:4000/getCars",{
+            params : {
+              country : location.state.country,
+              city : location.state.cities[location.state.startLocation].CITY,
+              startDate : location.state.startDate,
+              startTime : location.state.startTime,
+              endDate : location.state.endDate,
+              endTime : location.state.endTime
+            }
+          }).then((response) => {
+            console.log(response.data);
+          // setCountries(response.data);
+          // console.log(countries[0]);
+            setCars(response.data);
+            console.log(cars)
+          })
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getCars();
+  },[])
+
+
+  // SELECT * FROM CAR 
+  // NATURAL JOIN office 
+  // WHERE COUNTRY = 'Egypt'
+  // AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR)
+  // EXCEPT
+  // (SELECT PLATE_ID FROM reservation
+  // WHERE PICKUP_DATE <= '2022-12-20 00:00:00' AND DROPOFF_DATE >= '2022-12-10 00:00:00'));
+  useEffect(()=>{
+    async function getCountries() {
+      try {
+        const res =  axios.get("http://localhost:4000/getCountries").then((response) => {
+        console.log(response.data);
+        setCountries(response.data);
+        // console.log(countries[0]);
+        setCountry(countries[0]);
+        // console.log(country);
+        // console.log(countries)
+        })
+      } catch (error) {
+      console.log(error);
+      }
+    }
+    getCountries();
+  },[]);
+
+
+  // fetching cities
+  useEffect(()=>{
+    if(countries[0]){
+      async function getCities() {
+        try {
+          const res =  axios.get("http://localhost:4000/getCities",{
+            params : {
+              country : countries[country]
+            }
+          }).then((response) => {
+          console.log(response.data);
+          // setCountries(response.data);
+          // console.log(countries[0]);
+            setCities(response.data);
+          console.log(cities)
+          })
+        } catch (error) {
+        console.log(error);
+        }
+      }
+      getCities();
+    }
+  },[country]);
+ 
+
+
+
+//   useEffect( () => {
+//     fetchItems();
+// }, []);
+
+// const fetchItems = async () => {
+//   try{
+//     const res = await axios.get('http://localhost:4000/browseCar');
+//     console.log(res.data);
+//     setMessage(res.data);
+//   }
+//   catch(err){
+//     console.log(err);
+//   }
+// };
+
+// const fetchItems = async () => {
+//   try {
+//     const res = await axios.get("http://localhost:4000/").then((response) => {
+//       console.log(response.data.name);
+//       setName(response.data.name);
+//     });
+//     console.log("Successful");
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+
+  const handleGo = (e)=>{
+    e.preventDefault();
+    if(startDate == "" || startTime == "" || endDate == "" || endTime == "")
+    {
+      setError("all fields are required");
+    }
+    else{
+      try {
+        const res =  axios.get("http://localhost:4000/getCars",{
+          params : {
+            country : country,
+            city : cities[startLocation].CITY,
+            startDate : startDate,
+            startTime : startTime,
+            endDate : endDate,
+            endTime : endTime
+          }
+        }).then((response) => {
+          console.log(response.data);
+        // setCountries(response.data);
+        // console.log(countries[0]);
+          setCars(response.data);
+          console.log(cars)
+        })
+      } catch (error) {
+        console.log(error);
+      }
+      setEdit(!edit)
+    }
+    
   }
-  catch(err){
-    console.log(err);
-  }
-};
-
-
-// async function postInfo(e)
-// {
-//    e.preventDefault()
-//    const res = await axios.post('http://localhost:4000/trial', {
-//     firstName: 'Fred',
-//     lastName: 'Flintstone'
-
-//   })
-//   .then(function (response) {
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
-// }
 
   return (
     <div>
@@ -77,47 +215,48 @@ const fetchItems = async () => {
           <div className="browse col-10">
               {/* <div className = "row"><Navbar /></div> */}
               <div className = "row datetime">
-                <div className = "col-6"><p className = "par1">It is never too late to change!</p></div>
-                <div className = "col-6">
+                <div className = "col-12 col-lg-6"><p className = "par1">It is never too late to change!</p></div>
+                <div className = "col-12 col-lg-6">
                   { edit ? (<form className = "datetime-form" type = "post">
                       <div className = "country">
-                        <select className = "countrySelect">
-                          <option selected disabled > Country </option>
+                        <label style = {{color : "white",fontWeight:"500"}}>Country</label>
+                        <select className="countrySelect" onChange={(e)=>{setCountry(e.target.selectedIndex)}}> 
+                          {countries.map((item)=><option style= {{color : "black"}}>{item.COUNTRY}</option>)}
                         </select>
                       </div>
                        <div style={{"position" : "relative"}}>
-                        <InputBox title = {"Pick-up"}/>
+                       <InputBox title={"Pick-up"} editCity = {setStartCity} citiesOptions = {cities} editDate = {setstartDate} editTime = {setstartTime} editLocation = {setstartLocation} editError = {setError}/>
                         <div className = "box"><SwapVertIcon/></div>
-                        <InputBox title = {"Drop-off"}/>
+                        <InputBox title={"Drop-off"} editCity = {setEndCity} citiesOptions = {cities} editDate = {setendDate} editTime = {setendTime} editLocation = {setendLocation} editError = {setError}/>
                       </div>  
                       <div style = {{"display": "flex","margin-top" : "20px", "align-items":"center", "justifyContent" : "center"}}>
-                        <button class="login btn btn-primary"  onClick={()=>{setEdit(!edit)}}>Go</button>
+                        <button class="login btn btn-primary"  onClick={handleGo}>Go</button>
                       </div> 
-
+                      {error != "" && <div style = {{color:"white",textAlign:"center"}}><span>All fields are required</span></div>}
 
                   </form>)  
                   :
                   (
                   <div>
                     <div>
-                      <LocationDateTimeData title = {"Pick-up"} location = {"Alexandria"} date = {"12/12/2022"} time = {"12:00 pm"}/>
-                      <LocationDateTimeData title = {"Drop-off"} location = {"Alexandria"} date = {"13/12/2022"} time = {"12:00 pm"}/>
+                      <LocationDateTimeData title = {"Pick-up"} Location = {startCity} date = {startDate} time = {startTime} />
+                      <LocationDateTimeData title = {"Drop-off"} Location = {endCity} date = {endDate} time = {endTime} />
                     </div>  
                     <div style = {{"display": "flex","margin-top" : "20px", "align-items":"center", "justifyContent" : "center"}}>
                       {/* <a class="login btn btn-primary" href="#" role="button">Edit</a> */}
-                      <button class="login btn btn-primary"  onClick={()=>{setEdit(!edit)}}>Edit</button>
+                      <button class="login btn btn-primary"  onClick={()=>{setEdit(!edit); setstartDate("");setstartTime("");setendDate("");setendTime("")}}>Edit</button>
                     </div>
                   </div> )}
 
               </div>
               </div>
               <div className = "cardsArea row justify-content-start">
-                <ReactCard img = "https://imgd.aeplcdn.com/0x0/n/cw/ec/41375/x6-exterior-right-front-three-quarter.jpeg" name = {message} price = "90"/>
+                {/* <ReactCard img = "https://imgd.aeplcdn.com/0x0/n/cw/ec/41375/x6-exterior-right-front-three-quarter.jpeg" name = {message} price = "90"/>
                 <ReactCard img = "https://quickbutik.imgix.net/13175t/products/5de8f7e3c6852.jpeg" name = "Seat-Cupra" price = "50"/>
                 <ReactCard img = "https://media.istockphoto.com/id/1157655660/photo/generic-red-suv-on-a-white-background-side-view.jpg?s=612x612&w=0&k=20&c=ecrvXZhimUHnYES-kx7L5b-TDtRU5kAFPpNm0ZtAp1Y=" name = "Audi-Q2" price = "60"/>
                 <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/>
-                <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/>
-
+                <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/> */}
+                {cars.map(car=><ReactCard img = {car.IMAGE} name = {car.MANUFACTURER + "-" + car.MODEL} price = {car.PRICE}/>)}
                 
                 
               </div>

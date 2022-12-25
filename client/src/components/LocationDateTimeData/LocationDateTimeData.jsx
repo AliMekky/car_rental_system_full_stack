@@ -11,7 +11,7 @@ function LocationDateTimeData(props) {
                       <div className = "col-4 trip"  style={{"borderRight" : "1px solid #90a3bf"}}>
                           <label>Locations</label>
                           <div>
-                            <label className = "value">{props.location}</label>
+                            <label className = "value">{props.Location}</label>
                           </div>
                       </div>
                       <div className = "col-4 trip" style={{"borderRight" : "1px solid #90a3bf"}}>

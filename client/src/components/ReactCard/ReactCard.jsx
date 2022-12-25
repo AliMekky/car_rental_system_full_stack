@@ -4,7 +4,7 @@ import {CCard,CCardBody,CCardImage,CCardText,CCardTitle,CButton} from '@coreui/r
 //"https://imgd.aeplcdn.com/0x0/n/cw/ec/41375/x6-exterior-right-front-three-quarter.jpeg"
 function ReactCard(props) {
   return (
-    <CCard className = "m-3" style={{ width: '18rem', }}>
+    <CCard className = "m-3" style={{ width: '19rem', }}>
     <CCardImage style = {{height:"148px"}} orientation="top" src={props.img} />
     <CCardBody>
       <CCardTitle>  <span style = {{alignSelf : "center","fontWeight":"700", "fontSize" : "14px", "color" : "#90A3BF"}}>{props.name}</span></CCardTitle>
