@@ -18,7 +18,7 @@ import {
 } from "react-router-dom";
 
 function Home() {
-  const [name, setName] = useState("");
+  const [name, setName] = useState("Guest");
   const [startDate, setstartDate] = useState("");
   const [startTime, setstartTime] = useState("");
   const [endDate, setendDate] = useState("");
@@ -74,6 +74,8 @@ function Home() {
     }
   },[country]);
 
+  const [isLogged, setIsLogged] = useState(0);
+
   useEffect(() => {
     fetchItems();
   }, []);
@@ -83,6 +85,7 @@ function Home() {
       const res = await axios.get("http://localhost:4000/").then((response) => {
         console.log(response.data.name);
         setName(response.data.name);
+        setIsLogged(response.data.isLogged);
       });
       console.log("Successful");
     } catch (err) {
@@ -94,7 +97,8 @@ function Home() {
       const res = axios.get("http://localhost:4000/logout").then((response) => {
         console.log(response.data.name);
         setName(response.data.name);
-            });
+        setIsLogged(response.data.isLogged);
+      });
     } catch (err) {
       console.log(err);
     }
@@ -133,15 +137,20 @@ function Home() {
 
         <span class="buttons">
           <span>{name}'s account!</span>
-          <a class="login btn btn-primary" onClick={end} role="button">
-            LOGOUT
-          </a>
-          <a class="login btn btn-primary" href="/Login" role="button">
-            LOGIN
-          </a>
-          <a class="signup btn btn-primary" href="/Signup" role="button">
-            SIGN UP
-          </a>
+          {isLogged ? (
+            <a class="login btn btn-primary" onClick={end} role="button">
+              LOGOUT
+            </a>
+          ) : (
+            <div>
+              <a class="login btn btn-primary" href="/Login" role="button">
+                LOGIN
+              </a>
+              <a class="signup btn btn-primary" href="/Signup" role="button">
+                SIGN UP
+              </a>
+            </div>
+          )}
         </span>
       </div>
 

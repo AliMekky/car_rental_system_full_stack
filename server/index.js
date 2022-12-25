@@ -1,13 +1,17 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const mysql = require("mysql");
-const session = require("express-session");
+var session = require('express-session');
+var bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
+// const redis = require('redis');
+// const redisClient = redis.createClient();
+// const redisStore = require('connect-redis')(session);
 
 var auth = 0;
 var sessionv;
-
+//install redis-server urgently!!
+// https://github.com/microsoftarchive/redis/blob/win-3.0.504/Redis%20on%20Windows%20Release%20Notes.md
 //Create Connections
 const db = mysql.createConnection({
   host: "localhost",
@@ -17,12 +21,12 @@ const db = mysql.createConnection({
 });
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
+// redisClient.on('error', (err) => {
+//   console.log('Redis error: ', err);
+// });
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
-const redisClient = require("redis").createClient({
-  legacyMode: true,
-});
 
 // Connect to database
 db.connect((err) => {
@@ -33,18 +37,21 @@ db.connect((err) => {
 });
 
 // configure the `express-session` middleware
+//     store: new redisStore({ host: 'localhost', port: 6379, client: redisClient}),
+
 app.use(
   session({
-    secret: "my-secret", // a secret key to sign the session ID cookie
+    secret: "mySecret",
     resave: false, // don't save the session if it hasn't been modified
     saveUninitialized: false, // don't create a session if one doesn't already exist
     cookie: {
-      secure: false, // set this to true if you are using https
-      maxAge: 1000, // the max age of the session cookie, in milliseconds
+      secure: false, // if true: only transmit cookie over https
+      httpOnly: true, // if true: prevents client side JS from reading the cookie
+      maxAge: 1000 * 60 * 30, // session max age in milliseconds
+      sameSite: 'lax' // make sure sameSite is not non
     },
   })
 );
-
 // create a route to sign up a new user
 app.post("/signup", (req, res) => {
   const { name, email, password, phone_number, isAdmin } = req.body;
@@ -79,6 +86,7 @@ app.post("/signup", (req, res) => {
         // }
         req.session.isAdmin = 0;
         req.session.name = name;
+        req.session.isLogged = 1;
         sessionv = req.session;
         res.redirect("/");
       }
@@ -86,8 +94,20 @@ app.post("/signup", (req, res) => {
   });
 });
 
+
+app.get("/", (req, res) => {
+  // console.log("After using redis store: "+req.session.isAdmin);
+  // req.session.wtf="wow";
+  // console.log("Debugging 101: req.session.wtf is " + req.session.wtf);
+  if (sessionv) {
+    res.json({ title: "Welcome, user!", name: sessionv.name, isLogged: sessionv.isLogged});
+  } else res.json({ title: "Welcome, guest!", name: "Guest", isLogged:false });
+  
+});
+
 // create a route to log in a user
 app.post("/login", (req, res) => {
+  console.log("Debugging 101 in login: req.session.wtf is " + req.session.wtf);
   const { email, password } = req.body;
   // console.log(email, password);
   const query = `SELECT * FROM customer WHERE email = ?`;
@@ -106,7 +126,9 @@ app.post("/login", (req, res) => {
       if (err) throw err;
       if (isMatch) {
         req.session.isAdmin = JSON.parse(JSON.stringify(rows[0]))["ISADMIN"];
+        // console.log("Original req.session: "+req.session.isAdmin);
         req.session.name = JSON.parse(JSON.stringify(rows[0]))["NAME"];
+        req.session.isLogged = 1;
         sessionv = req.session;
         // var elem = JSON.parse(JSON.stringify(rows[0]));
         // req.session.isAdmin = elem["ISADMIN"];
@@ -140,16 +162,10 @@ const checkAdmin = (req, res, next) => {
 
 // create a route that is protected by the middleware
 app.get("/Admin", checkAdmin, (req, res) => {
-  res.json({ title: "Welcome, admin!", name: sessionv.name });
+  res.json({ title: "Welcome, admin!", name: sessionv.name, isLogged: sessionv.isLogged });
 });
 
 
-app.get("/", (req, res) => {
-  if (sessionv) {
-    res.json({ title: "Welcome, user!", name: sessionv.name });
-  } else res.json({ title: "Welcome, guest!", name: "Guest" });
-  
-});
 
 app.get("/logout", (req, res) => {
   sessionv = 0;
@@ -339,20 +355,10 @@ app.get("/CarStatus", (req, res) => {
   let start = req.query.statDate 
 
 
-  let stat =  " SELECT STATUS,car.MANUFACTURER, car.MODEL ,car.YEAR ,car.TYPE,PLATE_ID  FROM status_logger NATURAL JOIN CAR WHERE abs(datediff(START_DATE,'" +
-  start +
-  "' )) = ( select  min( abs(datediff(START_DATE,'" +
-  start +
-  "'  )) ) from status_logger ) UNION SELECT STATUS,car.MANUFACTURER, car.MODEL ,car.YEAR ,car.TYPE,PLATE_ID FROM status_logger NATURAL JOIN CAR where START_DATE < '" +
-  start +
-  "' and car.PLATE_ID not in ( SELECT PLATE_ID FROM status_logger NATURAL JOIN CAR where abs(datediff(START_DATE,'" +
-  start +
-  "')) = ( select  min( abs(datediff(START_DATE,'" +
-  start +
-  "')) ) from status_logger ) )";
+  let stat =  "with temp as (SELECT STATUS,PLATE_ID, Row_number() OVER (PARTITION BY PLATE_ID order by abs(datediff(START_DATE,?)) ASC) as row FROM status_logger) SELECT PLATE_ID,STATUS,car.MANUFACTURER,car.MODEL,car.YEAR,car.TYPE from temp  NATURAL JOIN car WHERE row = 1";
 
   console.log(stat);
-  db.query(stat, (err, rows) => {
+  db.query(stat,[start] ,(err, rows) => {
     if (!err) {
       var result = JSON.parse(JSON.stringify(rows));
     } else {
