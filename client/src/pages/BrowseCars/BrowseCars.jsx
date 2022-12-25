@@ -13,6 +13,13 @@ import InputBox from "../../components/LocationDateTime/LocationDateTime";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import ReactCard from "../../components/ReactCard/ReactCard";
 import LocationDateTimeData from "../../components/LocationDateTimeData/LocationDateTimeData";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 function BrowseCars() {
   let navigate = useNavigate();
@@ -72,8 +79,9 @@ function BrowseCars() {
               console.log(response.data);
               // setCountries(response.data);
               // console.log(countries[0]);
-              setCars(response.data);
-              console.log(cars);
+              
+            setCars(response.data);
+              // console.log(response.data);;
             });
         } catch (error) {
           console.log(error);
@@ -191,7 +199,7 @@ function BrowseCars() {
             // setCountries(response.data);
             // console.log(countries[0]);
             setCars(response.data);
-            console.log(cars);
+            // console.log(response.data);;
           });
       } catch (error) {
         console.log(error);

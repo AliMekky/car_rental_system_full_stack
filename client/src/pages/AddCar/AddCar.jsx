@@ -1,8 +1,74 @@
 import React from 'react'
 import './AddCar.css';
 import "../Admin/Admin.css";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    useNavigate,
+  } from "react-router-dom";
+
+  
 
 function AddCar(props) {
+    const [plateId, setPlateId] = useState("");
+    const [carManufacturer, setcarManufacturer] = useState("");
+    const [carModel, setCarModel] = useState("");
+    const [carYear, setCarYear] = useState("");
+    const [carPrice, setcarPrice] = useState("");
+    const [carType, setCarType] = useState("");
+    const [carCapacity, setCarCapacity] = useState("");
+    const [carColor, setCarColor] = useState("");
+    const [officeID, setOfficeId] = useState("");
+    const [carImage, setCarImage] = useState("");
+    const [carResponse, setCarResponse] = useState("");
+    const [error, setError] = useState("");
+
+    const car_insertion = (event) => {
+        if (carManufacturer != "" && carModel != "" && plateId != "" && carYear != "" && carPrice != "" && carType != "" && carCapacity != "" && carColor != "" && officeID != "" && carImage != "" ){
+            axios
+                .post("http://localhost:4000/addCar" , {
+                   
+                         plateId,
+                         carManufacturer,
+                         carModel,
+                         carYear,
+                         carPrice,
+                         carType,
+                         carCapacity,
+                         carColor,
+                         officeID,
+                         carImage,
+                    
+                })
+                
+
+                .then((response)=>{
+                    console.log(response);
+                    if(response.length!=0){
+                        // alert(response.data);
+                        setCarResponse(response.data);
+                    }
+                }, (error) => {
+                    console.log(error);
+
+                })
+
+                
+
+       
+
+        }
+    };
+    
+
+
+
+    
     return (
         <div className='popup'>
             <div class="container py-5">
@@ -24,13 +90,26 @@ function AddCar(props) {
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="text" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Plate ID' />
+                                                <input type="text" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Plate ID'
+                                                       required
+                                                       onChange={(e) => {
+                                                         setPlateId(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {plateId == "" && (<span> This field is required.</span> )}
                                             </div>
                                         </div>
 
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="text" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Manufacturer' />
+                                                <input type="text" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Manufacturer'                             required
+                                                       onChange={(e) => {
+                                                        setcarManufacturer(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {carManufacturer == "" && (<span> This field is required.</span> )}
                                             </div>
                                         </div>
 
@@ -38,43 +117,27 @@ function AddCar(props) {
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="text" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Model' />
+                                                <input type="text" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Model'   
+                                                        required
+                                                       onChange={(e) => {
+                                                        setCarModel(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {carModel== "" && (<span> This field is required.</span> )}
                                             </div>
                                         </div>
 
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="number" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Year' />
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-outline mb-4">
-                                                <input type="number" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Price' />
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-outline mb-4">
-                                                <input type="text" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Type' />
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-outline mb-4">
-                                                <input type="text" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Capacity' />
-                                            </div>
-                                        </div>
-
-                                        <div class="col">
-                                            <div class="form-outline mb-4">
-                                                <input type="text" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Color' />
+                                                <input type="number" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Year'     
+                                                        required
+                                                       onChange={(e) => {
+                                                        setCarYear(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {carYear== "" && (<span> This field is required.</span> )}
                                             </div>
                                         </div>
 
@@ -83,13 +146,85 @@ function AddCar(props) {
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="number" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Office ID' />
+                                                <input type="number" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Price' 
+                                                        required
+                                                       onChange={(e) => {
+                                                        setcarPrice(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {carPrice== "" && (<span> This field is required.</span> )}
                                             </div>
                                         </div>
 
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="url" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Car Image' />
+                                                <input type="text" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Type'    
+                                                     required
+                                                       onChange={(e) => {
+                                                        setCarType(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {carType== "" && (<span> This field is required.</span> )}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-outline mb-4">
+                                                <input type="text" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Capacity'    
+                                                     required
+                                                       onChange={(e) => {
+                                                        setCarCapacity(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {carCapacity== "" && (<span> This field is required.</span> )}
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-outline mb-4">
+                                                <input type="text" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Color'   
+                                                      required
+                                                       onChange={(e) => {
+                                                        setCarColor(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {carColor== "" && (<span> This field is required.</span> )}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-outline mb-4">
+                                                <input type="number" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Office ID'   
+                                                      required
+                                                       onChange={(e) => {
+                                                        setOfficeId(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {officeID== "" && (<span> This field is required.</span> )}
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-outline mb-4">
+                                                <input type="url" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Car Image'   
+                                                      required
+                                                       onChange={(e) => {
+                                                        setCarImage(e.target.value);
+                                                         setError("");
+                                                       }}
+                                                />
+                                                   {carImage== "" && (<span> This field is required.</span> )}
                                             </div>
                                         </div>
                                     </div>
@@ -97,8 +232,13 @@ function AddCar(props) {
 
                                     <div class=" d-flex justify-content-end ">
 
-                                        <button class="btn btn-primary btn-size btn-lg btn-block" type="submit" style={{"width":"30%"}}>Continue</button>
-
+                                        <button class="btn btn-primary btn-size btn-lg btn-block" type="submit" style={{"width":"30%"}} onClick = {car_insertion}>Continue</button>
+                                        {carResponse != "" && 
+                                                   
+                                               <div><DoneAllIcon/> <span>{carResponse}</span></div>
+                                         
+                    
+                                         }
                                     </div>
                                 </div>
 
