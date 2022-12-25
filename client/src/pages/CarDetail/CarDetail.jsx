@@ -1,8 +1,12 @@
 import React from "react";
 import "./CarDetail.css";
 import Navbar from "../../components/navbar/Navbar";
+import { useLocation } from "react-router-dom";
 
 function CarDetail() {
+  const location = useLocation();
+  const car = location.state.car;
+
   return (
     <div>
       <Navbar />
@@ -10,7 +14,7 @@ function CarDetail() {
         <li>
           <a href="" class="card">
             <img
-              src="https://imgd-ct.aeplcdn.com/1056x660/n/cw/ec/40432/scorpio-n-exterior-front-view.jpeg?isig=0&q=75"
+              src={car.IMAGE}
               class="card__image"
               alt=""
             />
@@ -24,14 +28,14 @@ function CarDetail() {
                           <td>
                             <div>
                               <span class="car__name">.</span>
-                              <span class="car__price">90$/day</span>
+                              <span class="car__price">{car.PRICE + "$/day"}</span>
                             </div>
                           </td>
                         </tr>
                         <tr>
                           <td>
                             <div>
-                              <span class="car__name_m">Nissan GT-R</span>
+                              <span class="car__name_m">{car.MANUFACTURER + "-" + car.MODEL}</span>
                               <span>
                                 <button class="btn btn-primary car__price_m">
                                   Rent Now
@@ -48,21 +52,21 @@ function CarDetail() {
               <div class="data">
                 <div class="row">
                   <div class="col-md-3 title-word">Manufacturer:</div>
-                  <div class="col-md-3 value-word">Nissan</div>
+                  <div class="col-md-3 value-word">{car.MANUFACTURER}</div>
                   <div class="col-md-3 title-word">Model:</div>
-                  <div class="col-md-3 value-word">GT - R</div>
+                  <div class="col-md-3 value-word">{car.MODEL}</div>
                 </div>
                 <div class="row">
                   <div class="col-md-3 title-word">Year:</div>
-                  <div class="col-md-3 value-word">2017</div>
+                  <div class="col-md-3 value-word">{car.YEAR}</div>
                   <div class="col-md-3 title-word">Price:</div>
-                  <div class="col-md-3 value-word">90$/day</div>
+                  <div class="col-md-3 value-word">{car.PRICE + "$/day"}</div>
                 </div>
                 <div class="row">
                   <div class="col-md-3 title-word">Type:</div>
-                  <div class="col-md-3 value-word">Sports</div>
+                  <div class="col-md-3 value-word">{car.TYPE}</div>
                   <div class="col-md-3 title-word">Capacity:</div>
-                  <div class="col-md-3 value-word">4 people</div>
+                  <div class="col-md-3 value-word">{car.CAPACITY + "people"} </div>
                 </div>
               </div>
             </div>

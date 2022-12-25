@@ -208,7 +208,84 @@ app.get("/getCars",(req, res) => {
 });
 
   
+app.post("/addCar", (req, res) => { 
 
+  const {plateId : plate_Id,carManufacturer : manufacturer,carModel : model,carYear : year,carPrice : price,carType : type,carCapacity : capacity,carColor : color,officeID : office_Id,carImage : image} = req.body;
+  console.log(req.body);
+  console.log(plate_Id);
+  // let plate_Id=req.query.plate_Id;
+  // let manufacturer=req.query.manufacturer;
+  // let model=req.query.model;
+  // let year=req.query.year;
+  // let price=req.query.price;
+  // let type=req.query.type;
+  // let capacity=req.query.capacity;
+  // let color=req.query.color;
+  // let office_Id=req.query.office_Id;
+  // let image=req.query.image;
+
+  
+  let str =
+  '"' +
+  plate_Id +
+  '",' +
+  '"' +
+  manufacturer +
+  '",' +
+  '"' +
+  model +
+  '",' +
+  '"' +
+  year +
+  '",' +
+  '"' +
+  price +
+  '",' +
+  '"' +
+  type +
+  '",' +
+  '"' +
+  capacity +
+  '",' +
+  '"' +
+  color +
+  '",' +
+  '"' +
+  office_Id +
+  '",' +
+  '"' +
+  image +
+  '"';
+
+  console.log(str);
+
+  const query =
+  `INSERT INTO car (PLATE_ID, MANUFACTURER , MODEL , YEAR ,  PRICE , TYPE , CAPACITY , COLOR , OFFICE_ID , IMAGE ) VALUES (` +
+  str +
+  ")";
+  
+  // db.query(
+  //   query,
+  //   [plate_Id, manufacturer, model, year, price, type, capacity , color ,office_Id, image],
+
+  // );
+
+  var response=manufacturer+"-"+model+" Added Car SuccessFully";
+
+  db.query(query, function(err, result) {
+    if (err){
+      console.log(err);
+    } 
+    else{
+      console.log('record inserted');
+      // req.flash('success', 'Data added successfully!');
+      res.send(response);
+    }
+    
+    
+    
+  })
+});
 
 app.get("/getCountries",(req,res)=>{
   let stat = "SELECT DISTINCT COUNTRY FROM OFFICE"

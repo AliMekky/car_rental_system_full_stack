@@ -13,6 +13,13 @@ import InputBox from "../../components/LocationDateTime/LocationDateTime";
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import ReactCard from "../../components/ReactCard/ReactCard";
 import LocationDateTimeData from "../../components/LocationDateTimeData/LocationDateTimeData";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 function BrowseCars() {
   const [startDate, setstartDate] = useState("");
@@ -64,8 +71,9 @@ function BrowseCars() {
             console.log(response.data);
           // setCountries(response.data);
           // console.log(countries[0]);
+            
             setCars(response.data);
-            console.log(cars)
+            // console.log(response.data);
           })
         } catch (error) {
           console.log(error);
@@ -178,7 +186,7 @@ function BrowseCars() {
         // setCountries(response.data);
         // console.log(countries[0]);
           setCars(response.data);
-          console.log(cars)
+          // console.log(response.data);
         })
       } catch (error) {
         console.log(error);
@@ -256,7 +264,8 @@ function BrowseCars() {
                 <ReactCard img = "https://media.istockphoto.com/id/1157655660/photo/generic-red-suv-on-a-white-background-side-view.jpg?s=612x612&w=0&k=20&c=ecrvXZhimUHnYES-kx7L5b-TDtRU5kAFPpNm0ZtAp1Y=" name = "Audi-Q2" price = "60"/>
                 <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/>
                 <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/> */}
-                {cars.map(car=><ReactCard img = {car.IMAGE} name = {car.MANUFACTURER + "-" + car.MODEL} price = {car.PRICE}/>)}
+                {/* {cars.map(car=><ReactCard img = {car.IMAGE} name = {car.MANUFACTURER + "-" + car.MODEL} price = {car.PRICE}/>)} */}
+                {cars.map(car=><ReactCard carData = {car}/>)}
                 
                 
               </div>

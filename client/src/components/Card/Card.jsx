@@ -1,7 +1,10 @@
 import React from "react";
 import "./Card.css";
+import { useLocation } from "react-router-dom";
 
 function Card() {
+  const location = useLocation();
+  const car = location.state.car;
   return (
     <div class="cards">
         <a href="" class="card">
