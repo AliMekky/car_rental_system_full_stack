@@ -2,8 +2,9 @@ import React from 'react'
 import './AddCar.css';
 import "../Admin/Admin.css";
 import { useState, useEffect } from "react";
+import ErrorIcon from '@mui/icons-material/Error';
 import axios from "axios";
-import DoneAllIcon from '@mui/icons-material/DoneAll';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import {
     BrowserRouter as Router,
     Routes,
@@ -29,6 +30,61 @@ function AddCar(props) {
     const [error, setError] = useState("");
 
     const car_insertion = (event) => {
+        
+        if(plateId){
+            if(plateId.length != 5){
+                setError("Enter a valid plate id");
+                return;
+            }
+            for(let i=0;i<plateId.length-1;i++){
+                if(isNaN(plateId.charAt(i))){
+                    setError("Enter a valid plate id");
+                    return;  
+                }
+                if(!isNaN(plateId.charAt(4))){
+                    setError("Enter a valid plate id");
+                    return;  
+                }
+            }
+        }
+        if(carYear){
+            let year = new Date().getFullYear();
+            if(carYear > year || carYear < 1980){
+                setError("Enter a valid year 1980-current");
+                return;
+            }
+        }
+
+        if(carPrice){
+            if (carPrice <20 || carPrice >200){
+                setError("Enter a valid Price 20$-200$");
+                return;
+            }
+        }
+
+        if(carType){
+            if(carType.toLowerCase() != "sport" || carType.toLowerCase() != "suv" || carType.toLowerCase() != "mpv" || carType.toLowerCase() != "sedan" || carType.toLowerCase() != "coupe" || carType.toLowerCase() != "hatchback"){
+                setError("Enter a valid car type");
+            }
+        }
+        if(carCapacity){
+            if(carCapacity<2 || carCapacity>8 || carCapacity%2==1){
+                setError("Enter a valid Capacity");
+                return;
+            }
+        }
+        if(carColor){
+
+            for(let i=0;i<carColor.length;i++){
+             if(!isNaN(carColor.charAt(i))){
+                setError("Enter a valid Color");
+                return;  
+                }
+            }
+
+
+
+        }
         if (carManufacturer != "" && carModel != "" && plateId != "" && carYear != "" && carPrice != "" && carType != "" && carCapacity != "" && carColor != "" && officeID != "" && carImage != "" ){
             axios
                 .post("http://localhost:4000/addCar" , {
@@ -52,16 +108,9 @@ function AddCar(props) {
                     if(response.length!=0){
                         // alert(response.data);
                         setCarResponse(response.data);
+                        // props.continue(false);
                     }
-                }, (error) => {
-                    console.log(error);
-
                 })
-
-                
-
-       
-
         }
     };
     
@@ -130,7 +179,7 @@ function AddCar(props) {
 
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="number" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Year'     
+                                                <input type="text" id="typePasswordX-2" class="form-control form-control-lg" placeholder='Year'     
                                                         required
                                                        onChange={(e) => {
                                                         setCarYear(e.target.value);
@@ -146,7 +195,7 @@ function AddCar(props) {
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="number" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Price' 
+                                                <input type="text" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Price' 
                                                         required
                                                        onChange={(e) => {
                                                         setcarPrice(e.target.value);
@@ -204,7 +253,7 @@ function AddCar(props) {
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-outline mb-4">
-                                                <input type="number" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Office ID'   
+                                                <input type="text" id="typeEmailX-2" class="form-control form-control-lg" placeholder='Office ID'   
                                                       required
                                                        onChange={(e) => {
                                                         setOfficeId(e.target.value);
@@ -232,14 +281,15 @@ function AddCar(props) {
 
                                     <div class=" d-flex justify-content-end ">
 
-                                        <button class="btn btn-primary btn-size btn-lg btn-block" type="submit" style={{"width":"30%"}} onClick = {car_insertion}>Continue</button>
+                                        <button class="btn btn-primary btn-size btn-lg btn-block" type="submit" style={{"width":"30%"}} onClick = {car_insertion}>Add Car</button>
                                         {carResponse != "" && 
                                                    
-                                               <div><DoneAllIcon/> <span>{carResponse}</span></div>
+                                               <div style = {{"margin-top" : "10px", "margin-left" : "20px"}}><span>{carResponse}{carResponse == "ERROR !!" ?<ErrorIcon style={{"margin-left" : "5px"}}/>:<CheckCircleOutlineRoundedIcon style={{"margin-left" : "5px"}} />}</span></div>
                                          
-                    
+                                           
                                          }
                                     </div>
+                                    {error != "" && <div class = "Error">{error}</div>}
                                 </div>
 
 

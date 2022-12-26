@@ -25,7 +25,7 @@ function BrowseCars() {
 
   const [typeFilter,setTypeFilter] = useState({Sport : false,SUV : false, MPV : false, Sedan : false, Coupe : false, Hatchback : false});
   const [capacityFilter,setCapacityFilter] = useState({'2 Person' : false,'4 Person' : false, '6 Person' : false, '8 Person or more' : false});
-  const [priceFilter,setPriceFilter] = useState(0);
+  const [priceFilter,setPriceFilter] = useState(200);
   const [startDate, setstartDate] = useState("");
   const [startTime, setstartTime] = useState("");
   const [endDate, setendDate] = useState("");
@@ -119,18 +119,18 @@ function BrowseCars() {
 
 
   // use effect that is called if any of the filter options changes
-  // useEffect(()=>{
-  //   async function filterCars(){
-  //     const res = await axios.get("http://localhost:4000/filterCars",{
-  //       params : {
-  //         type : typeFilter,
-  //         capacity : capacityFilter,
-  //         price : priceFilter
-  //       }
-  //     })
-  //   }
-  //   filterCars();
-  // },[typeFilter,capacityFilter,priceFilter]);
+  useEffect(()=>{
+    async function filterCars(){
+      const res = await axios.get("http://localhost:4000/filterCars",{
+        params : {
+          type : typeFilter,
+          capacity : capacityFilter,
+          price : priceFilter
+        }
+      }).then((response)=>{setCars(response.data);})
+    }
+    filterCars();
+  },[typeFilter,capacityFilter,priceFilter]);
 
   // },[typeFilter,capacityFilter,price]);
   // use effect for debugging after each change.

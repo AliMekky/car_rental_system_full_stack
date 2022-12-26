@@ -303,7 +303,7 @@ function Admin() {
                     </div>
                 </div> */}
       </div>
-      {CustOpen && <CustomerPopup close={handleClose} />}
+      {CustOpen && <CustomerPopup close={handleClose}  />}
       {CarOpen && <CarPopup close={handleClose} />}
       {DateOpen && (
         <DatTimePopup
@@ -328,7 +328,7 @@ function Admin() {
         />
       )}
       {UpdatStatusOPen && <UpdateStatus close={handleClose} />}
-      {NewCarOPen && <AddCar close={handleClose} />}
+      {NewCarOPen && <AddCar close={handleClose} continue={setNewCar} />}
     </div>
   );
 }

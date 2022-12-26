@@ -257,9 +257,10 @@ app.get("/getCars", (req, res) => {
   // global.data.endDate = endDate;
   // global.data.startTime = startTime;
   // global.data.endTime = endTime;
+  //country = global.data.country;
   console.log(global.data.startCity);
   city = global.data.startCity;
-  //country = global.data.country;
+  
   startDate = global.data.startDate;
   endDate = global.data.endDate;
   startTime = global.data.startTime;
@@ -287,58 +288,79 @@ app.get("/getCars", (req, res) => {
   }
 });
 
-// app.get("/filterCars",(req,res)=>{
-//   const {type : type, capacity : capacity, price: price} = req.query;
-//   // console.log(type);
-//   // console.log(capacity);
-//   // console.log(price);
-//   var typekeys = Object.keys(type);
-//   var capacitykeys = Object.keys(capacity);
-  
-  
+// SELECT PLATE_ID, MANUFACTURER, MODEL, `YEAR`, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE ((TYPE IN('Sedan','SUV','MPV','SportS','Coupe','Hatchback')) AND (CAPACITY IN(6,4,2)) AND(PRICE<=200)) AND PLATE_ID IN (SELECT PLATE_ID FROM CAR NATURAL JOIN office WHERE CITY = 'Paris' AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= '2022-12-10 00:00:00' AND DROPOFF_DATE >= '2022-12-1 00:00:00')));
 
-//   var filteredType = [] ;
-//   typekeys.map(k=>{type[k] == "true" && filteredType.push(k)});
+// filter cars
+app.get("/filterCars",(req,res)=>{
+  const {type : type, capacity : capacity, price: price} = req.query;
+  // console.log(type);
+  // console.log(capacity);
+  // console.log(price);
+  var typekeys = Object.keys(type);
+  var capacitykeys = Object.keys(capacity);
 
-//   var filteredCapacity = [] ;
-//   capacitykeys.map(k=>{capacity[k] == "true" && filteredCapacity.push(k.charAt(0))});
+  let city = global.data.startCity;
+  let startDate = global.data.startDate;
+  let endDate = global.data.endDate;
+  let startTime = global.data.startTime;
+  let endTime = global.data.endTime;
+
+  let start = startDate + " " + startTime;
+  let end = endDate + " " + endTime;
+
+
+  var filteredType = [] ;
+  typekeys.map(k=>{type[k] == "true" && filteredType.push(k)});
+
+  var filteredCapacity = [] ;
+  capacitykeys.map(k=>{capacity[k] == "true" && filteredCapacity.push(parseInt(k.charAt(0)))});
 
 
 
-//   console.log(filteredType);
-//   console.log(filteredCapacity);
-//   console.log(price);
 
-  
-  
-//   db.query("SELECT DISTINCT * FROM CAR WHERE TYPE IN(?) OR CAPACITY IN(?) OR PRICE<?",[filteredType,filteredCapacity,parseFloat(price)],(err,rows)=>{
-//     if(!err){
-//       var result = JSON.parse(JSON.stringify(rows));
-//        console.log(result);
-//     }
-//     else{
-//       console.log(err);
-//     }
-//     res.send(result);
-//   })
 
-// });
+  if(filteredType.length == 0){
+    filteredType = ['Sedan','SUV','MPV','Sport','Coupe','Hatchback'];
+  }
 
-app.get("/getData",(req,res)=>{
-    result = {startDate : global.data.startDate, 
-      startTime : global.data.startTime,
-      startLocation : global.data.startLocation,
-      endDate : global.data.endDate,
-      endTime : global.data.endTime,
-      endLocation : global.data.endLocation,
-      cities : global.data.cities,
+  if(filteredCapacity.length == 0){
+    filteredCapacity = [2,4,6,8];
+  }
+
+  console.log(filteredType);
+  console.log(filteredCapacity);
+  console.log(price);
+
+  db.query("SELECT PLATE_ID, MANUFACTURER, MODEL, `YEAR`, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE ((TYPE IN(?)) AND (CAPACITY IN(?)) AND(PRICE<=?)) AND PLATE_ID IN (SELECT PLATE_ID FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?)))"
+  ,[filteredType,filteredCapacity,parseFloat(price),city,end,start],(err,rows)=>{
+    if(!err){
+      var result = JSON.parse(JSON.stringify(rows));
+       console.log(result);
+    }
+    else{
+      console.log(err);
     }
     res.send(result);
+  })
+
+});
+
+app.get("/getData", (req, res) => {
+  result = {
+    startDate: global.data.startDate,
+    startTime: global.data.startTime,
+    startLocation: global.data.startLocation,
+    endDate: global.data.endDate,
+    endTime: global.data.endTime,
+    endLocation: global.data.endLocation,
+    cities: global.data.cities,
+  }
+  res.send(result);
 });
 
 
 
-app.post("/updateandgetCars",(req,res)=>{
+app.post("/updateandgetCars", (req, res) => {
   const {
     startDate,
     startTime,
@@ -361,90 +383,157 @@ app.post("/updateandgetCars",(req,res)=>{
   global.data.cities = cities;
   res.redirect("/getCars");
 });
-  
-app.post("/addCar", (req, res) => { 
 
-  const {plateId : plate_Id,carManufacturer : manufacturer,carModel : model,carYear : year,carPrice : price,carType : type,carCapacity : capacity,carColor : color,officeID : office_Id,carImage : image} = req.body;
+app.post("/updateStatus", (req, res) => { 
+  const {plateId : plate_Id,status : status} = req.body;
   console.log(req.body);
-  console.log(plate_Id);
-  // let plate_Id=req.query.plate_Id;
-  // let manufacturer=req.query.manufacturer;
-  // let model=req.query.model;
-  // let year=req.query.year;
-  // let price=req.query.price;
-  // let type=req.query.type;
-  // let capacity=req.query.capacity;
-  // let color=req.query.color;
-  // let office_Id=req.query.office_Id;
-  // let image=req.query.image;
 
-  
+  let current = new Date();
+  let cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
+  let cTime = current.getHours() + ":" + current.getMinutes() + ":" + current.getSeconds();
+  let dateTime = cDate + ' ' + cTime;
+
   let str =
   '"' +
   plate_Id +
   '",' +
   '"' +
-  manufacturer +
+  status +
   '",' +
   '"' +
-  model +
-  '",' +
-  '"' +
-  year +
-  '",' +
-  '"' +
-  price +
-  '",' +
-  '"' +
-  type +
-  '",' +
-  '"' +
-  capacity +
-  '",' +
-  '"' +
-  color +
-  '",' +
-  '"' +
-  office_Id +
-  '",' +
-  '"' +
-  image +
+  dateTime +
   '"';
 
-  console.log(str);
 
-  const query =
-  `INSERT INTO car (PLATE_ID, MANUFACTURER , MODEL , YEAR ,  PRICE , TYPE , CAPACITY , COLOR , OFFICE_ID , IMAGE ) VALUES (` +
+  console.log("update status server");
+
+
+
+  const query=   `INSERT INTO status_logger (PLATE_ID,STATUS,START_DATE) VALUES (` +
   str +
   ")";
+
+
   
-  // db.query(
-  //   query,
-  //   [plate_Id, manufacturer, model, year, price, type, capacity , color ,office_Id, image],
-
-  // );
-
-  var response=manufacturer+"-"+model+" Added Car SuccessFully";
 
   db.query(query, function(err, result) {
     if (err){
       console.log(err);
+      res.send("ERROR !!");
     } 
     else{
       console.log('record inserted');
-      // req.flash('success', 'Data added successfully!');
+      var response=plate_Id+" Status Updated SuccessFully";
       res.send(response);
-    }
-    
-    
-    
+    } 
   })
+
 });
 
-app.get("/getCountries",(req,res)=>{
+app.post("/addCar", (req, res) => { 
+
+  if(sessionv){
+    if(sessionv.isAdmin){
+      const {plateId : plate_Id,carManufacturer : manufacturer,carModel : model,carYear : year,carPrice : price,carType : type,carCapacity : capacity,carColor : color,officeID : office_Id,carImage : image} = req.body;
+      console.log(req.body);
+    
+      
+      let str =
+      '"' +
+      plate_Id +
+      '",' +
+      '"' +
+      manufacturer +
+      '",' +
+      '"' +
+      model +
+      '",' +
+      '"' +
+      year +
+      '",' +
+      '"' +
+      price +
+      '",' +
+      '"' +
+      type +
+      '",' +
+      '"' +
+      capacity +
+      '",' +
+      '"' +
+      color +
+      '",' +
+      '"' +
+      office_Id +
+      '",' +
+      '"' +
+      image +
+      '"';
+    
+    
+    let current = new Date();
+    let cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
+    let cTime = current.getHours() + ":" + current.getMinutes() + ":" + current.getSeconds();
+    let dateTime = cDate + ' ' + cTime;
+    
+    
+      let str2 =
+      '"' +
+      plate_Id +
+      '",' +
+      '"' +
+      "ACTIVE" +
+      '",' +
+      '"' +
+      dateTime +
+      '"';
+    
+     
+    
+    
+      console.log(str);
+    
+      const query =
+      `INSERT INTO car (PLATE_ID, MANUFACTURER , MODEL , YEAR ,  PRICE , TYPE , CAPACITY , COLOR , OFFICE_ID , IMAGE ) VALUES (` +
+      str +
+      ")";
+    
+      const query2=   `INSERT INTO status_logger (PLATE_ID,STATUS,START_DATE) VALUES (` +
+      str2 +
+      ")";
+      
+     
+    
+      var response=manufacturer+"-"+model+" Added SuccessFully";
+    
+      db.query(query, function(err, result) {
+        if (err){
+          console.log(err);
+          res.send("ERROR !!");
+        } 
+        else{
+          console.log('record inserted');
+          db.query(query2, function(err, result) {
+            if (err){
+              console.log(err);
+              res.send("ERROR !!");
+            } 
+            else{
+              console.log('status_logger inserted');
+        
+            }
+          })
+          res.send(response);
+        } 
+      })
+    }
+  }
+});
+
+app.get("/getCountries", (req, res) => {
   let stat = "SELECT DISTINCT COUNTRY FROM OFFICE"
-  db.query(stat,(err,rows)=>{
-    if(!err){
+  db.query(stat, (err, rows) => {
+    if (!err) {
       var result = JSON.parse(JSON.stringify(rows));
     } else {
       console.log(err);
@@ -636,7 +725,7 @@ app.get("/search", (req, res) => {
     key +
     '%");';
   let stat4 =
-    '(SELECT NAME, EMAIL, PHONE_NUMBER, PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR  FROM customer natural join car WHERE NAME LIKE "%' +
+    '(SELECT NAME, EMAIL, PHONE_NUMBER, PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR  FROM customer natural join reservation natural join car WHERE NAME LIKE "%' +
     key +
     '%" OR EMAIL LIKE "%' +
     key +
