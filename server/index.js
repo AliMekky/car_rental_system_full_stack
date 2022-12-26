@@ -187,8 +187,8 @@ app.get("/getCars",(req, res) => {
   let endDate = req.query.endDate;
   let startTime = req.query.startTime;
   let endTime = req.query.endTime;
-  console.log("get car");
-  console.log(req.query);
+  // console.log("get car");
+  // console.log(req.query);
 
   if(city && country && startDate && endDate && startTime && endTime){
     let start = startDate + " " + startTime;
@@ -196,7 +196,7 @@ app.get("/getCars",(req, res) => {
     db.query("SELECT PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?))",[city, end, start],(err,rows)=>{
       if(!err){
         var result = JSON.parse(JSON.stringify(rows));
-        console.log(result);
+        // console.log(result);
       }
       else{
         console.log(err);
@@ -207,6 +207,42 @@ app.get("/getCars",(req, res) => {
 
 });
 
+app.get("/filterCars",(req,res)=>{
+  const {type : type, capacity : capacity, price: price} = req.query;
+  // console.log(type);
+  // console.log(capacity);
+  // console.log(price);
+  var typekeys = Object.keys(type);
+  var capacitykeys = Object.keys(capacity);
+  
+  
+
+  var filteredType = [] ;
+  typekeys.map(k=>{type[k] == "true" && filteredType.push(k)});
+
+  var filteredCapacity = [] ;
+  capacitykeys.map(k=>{capacity[k] == "true" && filteredCapacity.push(k.charAt(0))});
+
+
+
+  console.log(filteredType);
+  console.log(filteredCapacity);
+  console.log(price);
+
+  
+  
+  db.query("SELECT DISTINCT * FROM CAR WHERE TYPE IN(?) OR CAPACITY IN(?) OR PRICE<?",[filteredType,filteredCapacity,parseFloat(price)],(err,rows)=>{
+    if(!err){
+      var result = JSON.parse(JSON.stringify(rows));
+       console.log(result);
+    }
+    else{
+      console.log(err);
+    }
+    res.send(result);
+  })
+
+});
   
 app.post("/addCar", (req, res) => { 
 

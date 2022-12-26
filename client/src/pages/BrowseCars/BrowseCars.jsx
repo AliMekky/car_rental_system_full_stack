@@ -22,6 +22,9 @@ import {
 } from "react-router-dom";
 
 function BrowseCars() {
+  const [typeFilter,setTypeFilter] = useState({Sport : false,SUV : false, MPV : false, Sedan : false, Coupe : false, Hatchback : false});
+  const [capacityFilter,setCapacityFilter] = useState({'2 Person' : false,'4 Person' : false, '6 Person' : false, '8 Person or more' : false});
+  const [priceFilter,setPriceFilter] = useState(0);
   const [startDate, setstartDate] = useState("");
   const [startTime, setstartTime] = useState("");
   const [endDate, setendDate] = useState("");
@@ -40,6 +43,7 @@ function BrowseCars() {
   const [price, setPrice] = useState(0);
   const [edit, setEdit]  = useState(false);
   const [message,setMessage] = useState("");
+
 
   useEffect(()=>{
       setstartDate(location.state.startDate);
@@ -81,6 +85,30 @@ function BrowseCars() {
       }
       getCars();
   },[])
+
+
+
+  // use effect that is called if any of the filter options changes
+  useEffect(()=>{
+    async function filterCars(){
+      const res = await axios.get("http://localhost:4000/filterCars",{
+        params : {
+          type : typeFilter,
+          capacity : capacityFilter,
+          price : priceFilter
+        }
+      })
+    }
+    filterCars();
+  },[typeFilter,capacityFilter,priceFilter]);
+
+  // },[typeFilter,capacityFilter,price]);
+  // use effect for debugging after each change.
+  // useEffect(()=>{
+  //   console.log(typeFilter);
+  //   console.log(capacityFilter);
+  //   console.log(priceFilter);
+  // },[priceFilter]);
 
 
   // SELECT * FROM CAR 
@@ -203,21 +231,21 @@ function BrowseCars() {
           <div class = "navbarB"><a href='/' class = "logo">GO CAR.</a></div>
           <div className="sidebar col-2">
               <div className = "categoryType"><DirectionsCarFilledIcon fontSize="small" style = {{"margin-right":"5px"}}/>TYPE</div>
-              <FilterOption name = {"Sport"}/>
-              <FilterOption name = {"SUV"}/>
-              <FilterOption name = {"MPV"}/>
-              <FilterOption name = {"Sedan"}/>
-              <FilterOption name = {"Coupe"}/>
-              <FilterOption name = {"Hatchback"}/>
+              <FilterOption name = {"Sport"} editFilter = {setTypeFilter}/>
+              <FilterOption name = {"SUV"} editFilter = {setTypeFilter}/>
+              <FilterOption name = {"MPV"} editFilter = {setTypeFilter}/>
+              <FilterOption name = {"Sedan"} editFilter = {setTypeFilter}/>
+              <FilterOption name = {"Coupe"} editFilter = {setTypeFilter}/>
+              <FilterOption name = {"Hatchback"} editFilter = {setTypeFilter}/>
               <hr/>
               <div className = "categoryType"><GroupIcon fontSize="small" style = {{"margin-right":"5px"}}/>CAPACITY</div>
-              <FilterOption name = {"2 Person"}/>
-              <FilterOption name = {"4 Person"}/>
-              <FilterOption name = {"6 Person"}/>
-              <FilterOption name = {"8 Person or more"}/>
+              <FilterOption name = {"2 Person"} editFilter = {setCapacityFilter}/>
+              <FilterOption name = {"4 Person"} editFilter = {setCapacityFilter}/>
+              <FilterOption name = {"6 Person"} editFilter = {setCapacityFilter}/>
+              <FilterOption name = {"8 Person or more"} editFilter = {setCapacityFilter}/>
               <hr/>
               <label for="customRange1" class="categoryType form-label"><PaidIcon fontSize="small" style = {{"margin-right":"5px"}}/>Price = {price}$/hr</label>
-              <input type="range" class="form-range" id="customRange1" min="20" max = "200" step = "1" onChange={(e)=>{setPrice(e.target.value)}}></input>
+              <input type="range" class="form-range" id="customRange1" min="20" max = "200" step = "1" onChange={(e)=>{setPrice(e.target.value)}} onMouseUp = {(e)=>{setPriceFilter(e.target.value)}}></input>
               
           </div>
           <div className="browse col-10">
