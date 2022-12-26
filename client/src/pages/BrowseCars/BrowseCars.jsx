@@ -13,19 +13,26 @@ import InputBox from "../../components/LocationDateTime/LocationDateTime";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import ReactCard from "../../components/ReactCard/ReactCard";
 import LocationDateTimeData from "../../components/LocationDateTimeData/LocationDateTimeData";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function BrowseCars() {
   let navigate = useNavigate();
 
-  const [typeFilter,setTypeFilter] = useState({Sport : false,SUV : false, MPV : false, Sedan : false, Coupe : false, Hatchback : false});
-  const [capacityFilter,setCapacityFilter] = useState({'2 Person' : false,'4 Person' : false, '6 Person' : false, '8 Person or more' : false});
-  const [priceFilter,setPriceFilter] = useState(200);
+  const [typeFilter, setTypeFilter] = useState({
+    Sport: false,
+    SUV: false,
+    MPV: false,
+    Sedan: false,
+    Coupe: false,
+    Hatchback: false,
+  });
+  const [capacityFilter, setCapacityFilter] = useState({
+    "2 Person": false,
+    "4 Person": false,
+    "6 Person": false,
+    "8 Person or more": false,
+  });
+  const [priceFilter, setPriceFilter] = useState(0);
   const [startDate, setstartDate] = useState("");
   const [startTime, setstartTime] = useState("");
   const [endDate, setendDate] = useState("");
@@ -40,6 +47,7 @@ function BrowseCars() {
   const [startCity, setStartCity] = useState("");
   const [endCity, setEndCity] = useState("");
   const [error, setError] = useState("");
+  const [logic, setLogic] = useState("");
   const location = useLocation();
   const [price, setPrice] = useState(0);
   const [edit, setEdit] = useState(false);
@@ -47,11 +55,13 @@ function BrowseCars() {
 
   const [name, setName] = useState("Guest");
   const [isLogged, setIsLogged] = useState(0);
+  const [email, setEmail] = useState("");
 
-
-  useEffect(()=>{
-    async function getData(){
-      const res = axios.get("http://localhost:4000/getData").then((response)=>{
+  useEffect(() => {
+    async function getData() {
+      const res = axios
+        .get("http://localhost:4000/getData")
+        .then((response) => {
           console.log("data");
           console.log(response.data);
           setstartDate(response.data.startDate);
@@ -64,10 +74,10 @@ function BrowseCars() {
           setCities(response.data.cities);
           setStartCity(response.data.cities[response.data.startLocation].CITY);
           setEndCity(response.data.cities[response.data.endLocation].CITY);
-      })
+        });
     }
     getData();
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (location.state) {
@@ -83,12 +93,16 @@ function BrowseCars() {
       // setEndCity(location.state.cities[location.state.endLocation].CITY);
       setName(location.state.name);
       setIsLogged(location.state.isLogged);
+      setEmail(location.state.email);
+      // console.log('EMAIL '+location.state.email)
       // console.log(location.state);
 
       // setGetCar(!getCar);
-      async function getCars() {
+      function getCars() {
+              console.log(location.state);
+
         try {
-          const res = await axios
+          const res = axios
             .get("http://localhost:4000/getCars", {
               params: {
                 country: location.state.country,
@@ -103,7 +117,6 @@ function BrowseCars() {
               console.log(response.data);
               // setCountries(response.data);
               // console.log(countries[0]);
-
               setCars(response.data);
               // console.log(response.data);;
             });
@@ -116,7 +129,6 @@ function BrowseCars() {
       navigate("/");
     }
   }, []);
-
 
   // use effect that is called if any of the filter options changes
   useEffect(()=>{
@@ -139,7 +151,6 @@ function BrowseCars() {
   //   console.log(capacityFilter);
   //   console.log(priceFilter);
   // },[priceFilter]);
-
 
   // SELECT * FROM CAR
   // NATURAL JOIN office
@@ -229,9 +240,12 @@ function BrowseCars() {
     e.preventDefault();
     if (startDate == "" || startTime == "" || endDate == "" || endTime == "") {
       setError("all fields are required");
+    } else if (Date.parse(startDate) > Date.parse(endDate)) {
+      setLogic("bad timing");
     } else {
       try {
-        const res = axios.post("http://localhost:4000/updateandgetCars", {
+        const res = axios
+          .post("http://localhost:4000/updateandgetCars", {
             startDate,
             startTime,
             startLocation,
@@ -283,6 +297,7 @@ function BrowseCars() {
                 <a class="login btn btn-primary" href="/Login" role="button">
                   LOGIN
                 </a>
+
                 <a class="signup btn btn-primary" href="/Signup" role="button">
                   SIGN UP
                 </a>
@@ -299,21 +314,24 @@ function BrowseCars() {
             />
             TYPE
           </div>
-          <FilterOption name={"Sport"}  editFilter = {setTypeFilter}/>
-          <FilterOption name={"SUV"}  editFilter = {setTypeFilter}/>
-          <FilterOption name={"MPV"}  editFilter = {setTypeFilter}/>
-          <FilterOption name={"Sedan"}  editFilter = {setTypeFilter}/>
-          <FilterOption name={"Coupe"}  editFilter = {setTypeFilter}/>
-          <FilterOption name={"Hatchback"}  editFilter = {setTypeFilter}/>
+          <FilterOption name={"Sport"} editFilter={setTypeFilter} />
+          <FilterOption name={"SUV"} editFilter={setTypeFilter} />
+          <FilterOption name={"MPV"} editFilter={setTypeFilter} />
+          <FilterOption name={"Sedan"} editFilter={setTypeFilter} />
+          <FilterOption name={"Coupe"} editFilter={setTypeFilter} />
+          <FilterOption name={"Hatchback"} editFilter={setTypeFilter} />
           <hr />
           <div className="categoryType">
             <GroupIcon fontSize="small" style={{ "margin-right": "5px" }} />
             CAPACITY
           </div>
-          <FilterOption name={"2 Person"}  editFilter = {setCapacityFilter}/>
-          <FilterOption name={"4 Person"}  editFilter = {setCapacityFilter}/>
-          <FilterOption name={"6 Person"}  editFilter = {setCapacityFilter}/>
-          <FilterOption name={"8 Person or more"}  editFilter = {setCapacityFilter}/>
+          <FilterOption name={"2 Person"} editFilter={setCapacityFilter} />
+          <FilterOption name={"4 Person"} editFilter={setCapacityFilter} />
+          <FilterOption name={"6 Person"} editFilter={setCapacityFilter} />
+          <FilterOption
+            name={"8 Person or more"}
+            editFilter={setCapacityFilter}
+          />
           <hr />
           <label for="customRange1" class="categoryType form-label">
             <PaidIcon fontSize="small" style={{ "margin-right": "5px" }} />
@@ -327,7 +345,10 @@ function BrowseCars() {
             max="200"
             step="1"
             onChange={(e) => {
-              setPrice(e.target.value)}} onMouseUp = {(e)=>{setPriceFilter(e.target.value);
+              setPrice(e.target.value);
+            }}
+            onMouseUp={(e) => {
+              setPriceFilter(e.target.value);
             }}
           ></input>
         </div>
@@ -347,10 +368,13 @@ function BrowseCars() {
                     <select
                       className="countrySelect"
                       onChange={(e) => {
-                        setCountry(e.target.selectedIndex -1);
+                        setCountry(e.target.selectedIndex - 1);
                       }}
                     >
-                      <option selected disabled style={{ color: "black" }}> Country </option>
+                      <option selected disabled style={{ color: "black" }}>
+                        {" "}
+                        Country{" "}
+                      </option>
                       {countries.map((item) => (
                         <option style={{ color: "black" }}>
                           {item.COUNTRY}
@@ -396,6 +420,11 @@ function BrowseCars() {
                   {error != "" && (
                     <div style={{ color: "white", textAlign: "center" }}>
                       <span>All fields are required</span>
+                    </div>
+                  )}
+                  {logic != "" && (
+                    <div style={{ color: "white", textAlign: "center" }}>
+                      <span>Drop-Off Date can't be before Pickup Date!</span>
                     </div>
                   )}
                 </form>
@@ -448,7 +477,21 @@ function BrowseCars() {
                 <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/>
                 <ReactCard img = "https://media.istockphoto.com/id/508007108/photo/white-van-isolated-on-white.jpg?s=612x612&w=0&k=20&c=cjajRKqun40A2QLqJqqadu1L1BHaECW1BNT0P82z4Jk=" name = "Mercedes-Benz-V" price = "80"/> */}
             {cars.map((car) => (
-              <ReactCard carData={car} />
+              <ReactCard
+                carData={car}
+                name={name}
+                isLogged={isLogged}
+                email={email}
+                tripData={{
+                  ...car,
+                  startDate: startDate,
+                  endDate: endDate,
+                  startLocation: cities[startLocation].CITY,
+                  endLocation: cities[endLocation].CITY,
+                  startTime: startTime,
+                  endTime: endTime,
+                }}
+              />
             ))}
           </div>
         </div>

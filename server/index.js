@@ -100,6 +100,7 @@ app.post("/signup", (req, res) => {
         req.session.isAdmin = 0;
         req.session.name = name;
         req.session.isLogged = 1;
+        req.session.email = email;
         sessionv = req.session;
         res.redirect("/");
       }
@@ -127,6 +128,7 @@ app.get("/", (req, res) => {
       endLocation: global.data.endLocation,
       endCity: global.data.endCity,
       cities: global.data.cities,
+      email: sessionv.email,
     });
   } else
     res.json({
@@ -151,7 +153,6 @@ app.post("/updateData", (req, res) => {
   global.data.startTime = startTime;
   global.data.endDate = endDate;
   global.data.endTime = endTime;
-
 
   global.data.startLocation = startLocation;
   global.data.endLocation = endLocation;
@@ -183,6 +184,7 @@ app.post("/login", (req, res) => {
         req.session.isAdmin = JSON.parse(JSON.stringify(rows[0]))["ISADMIN"];
         // console.log("Original req.session: "+req.session.isAdmin);
         req.session.name = JSON.parse(JSON.stringify(rows[0]))["NAME"];
+        req.session.email = JSON.parse(JSON.stringify(rows[0]))["EMAIL"];
         req.session.isLogged = 1;
         // req.session.city = "";
         // req.session.country = "";
@@ -374,8 +376,6 @@ app.post("/updateandgetCars", (req, res) => {
   global.data.startTime = startTime;
   global.data.endDate = endDate;
   global.data.endTime = endTime;
-
-
   global.data.startLocation = startLocation;
   global.data.endLocation = endLocation;
   global.data.startCity = cities[startLocation].CITY;
@@ -835,7 +835,7 @@ app.get("/search", (req, res) => {
     if (selectedValues[1] == "customer" && selectedValues[0] == "day") {
       final = stat6;
     }
-    if (selectedValues[0] == "customer" && selectedValues[1] == "day") {
+    if (selectedValues[0] == "customer" && "selectedValues"[1] == "day") {
       final = stat6;
     }
   }
@@ -856,4 +856,90 @@ app.get("/search", (req, res) => {
 const PORT = 4000; // backend routing port
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+});
+
+app.get("/payment", (req, res) => {
+  // console.log("After using redis store: "+req.session.isAdmin);
+  // req.session.wtf="wow";
+  // console.log("Debugging 101: req.session.wtf is " + req.session.wtf);
+  if (sessionv) {
+    console.log(sessionv.email);
+    res.json({
+      email: sessionv.email,
+    });
+  }
+});
+
+app.post("/reserve", (req, res) => {
+  const {
+    email,
+    plate_id,
+    pickup_date,
+    dropoff_date,
+    pickup_loc,
+    dropoff_loc,
+    date,
+    payMethod,
+  } = req.body;
+
+  const getID = `SELECT CUSTOMER_ID FROM CUSTOMER WHERE EMAIL=?`;
+  db.query(getID, [email], (err, ID) => {
+    if (err) {
+      console.error(err);
+      return;
+    } else {
+      let custId = JSON.parse(JSON.stringify(ID[0]))["CUSTOMER_ID"];
+      console.log(custId);
+      console.log(JSON.parse(JSON.stringify(ID[0]))["CUSTOMER_ID"]);
+      let payDate = " ";
+      if (payMethod == 1) {
+        // pay METHOD is 1 means he'll pay now, payment date = reservation day
+        payDate = date;
+      } else {
+        // pay method is 0 means he'll pay on drop off date
+        payDate = pickup_date;
+      }
+      const query = `INSERT INTO RESERVATION VALUES(?,?,?,?,?,?,?,?) `;
+      db.query(
+        query,
+        [
+          plate_id,
+          custId,
+          pickup_loc,
+          pickup_date,
+          dropoff_loc,
+          dropoff_date,
+          date,
+          payDate,
+        ],
+        (err, rows) => {
+          if (err) {
+            console.error(err);
+            res.send("error");
+            return;
+          } else {
+            console.log("DATA\n");
+            console.log(
+              plate_id +
+                " " +
+                custId +
+                " " +
+                pickup_loc +
+                " " +
+                pickup_date +
+                " " +
+                dropoff_loc +
+                " " +
+                dropoff_date +
+                " " +
+                date +
+                " " +
+                payDate
+            );
+            res.send("DONE");
+          }
+        }
+      );
+    }
+  });
 });

@@ -19,6 +19,7 @@ import {
 
 function Home() {
   const [name, setName] = useState("Guest");
+  const [email, setEmail] = useState("");
   const [startDate, setstartDate] = useState("");
   const [startTime, setstartTime] = useState("");
   const [endDate, setendDate] = useState("");
@@ -26,6 +27,7 @@ function Home() {
   const [startLocation, setstartLocation] = useState("0");
   const [endLocation, setendLocation] = useState("0");
   const [error, setError] = useState("");
+  const [logic, setLogic] = useState("");
   const [country, setCountry] = useState("");
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
@@ -90,6 +92,7 @@ function Home() {
         console.log(response.data.name);
         setName(response.data.name);
         setIsLogged(response.data.isLogged);
+        setEmail(response.data.email);
       });
       console.log("Successful");
     } catch (err) {
@@ -102,6 +105,7 @@ function Home() {
         console.log(response.data.name);
         setName(response.data.name);
         setIsLogged(response.data.isLogged);
+        setEmail(response.data.email);
       });
     } catch (err) {
       console.log(err);
@@ -112,35 +116,40 @@ function Home() {
     e.preventDefault();
     if (startDate == "" || startTime == "" || endDate == "" || endTime == "") {
       setError("all fields are required");
+    } else if (Date.parse(startDate) > Date.parse(endDate)) {
+      setLogic("bad timing");
     } else {
-      const res = axios.post("http://localhost:4000/updateData", {
-        startDate,
-        startTime,
-        startLocation,
-        cities,
-        endDate,
-        endTime,
-        endLocation,
-      }).then((response)=>{
-        if(response.data == "done"){
-          navigate("/BrowseCars", {
-            state: {
-              startDate: startDate,
-              startTime: startTime,
-              startLocation: startLocation,
-              cities: cities,
-              endDate: endDate,
-              endTime: endTime,
-              endLocation: endLocation,
-              country: countries[country],
-              name: name,
-              isLogged: isLogged,
-            },
-          });
-        }
-
-      });
-
+      const res = axios
+        .post("http://localhost:4000/updateData", {
+          startDate,
+          startTime,
+          startLocation,
+          cities,
+          endDate,
+          endTime,
+          endLocation,
+        })
+        .then((response) => {
+          if (response.data == "done") {
+            console.log("EMIAL IN HOME IS:" + email);
+            navigate("/BrowseCars", {
+              state: {
+                startDate: startDate,
+                startTime: startTime,
+                startLocation: startLocation,
+                cities: cities,
+                endDate: endDate,
+                endTime: endTime,
+                endLocation: endLocation,
+                country: countries[country],
+                name: name,
+                isLogged: isLogged,
+                email: email,
+              },
+            });
+          }
+          console.log("EMIAL IN HOME IS:" + email);
+        });
     }
   };
 
@@ -160,6 +169,7 @@ function Home() {
               <a class="login btn btn-primary" href="/Login" role="button">
                 LOGIN
               </a>
+
               <a class="signup btn btn-primary" href="/Signup" role="button">
                 SIGN UP
               </a>
@@ -192,10 +202,13 @@ function Home() {
               <select
                 className="countrySelect"
                 onChange={(e) => {
-                  setCountry(e.target.selectedIndex -1);
+                  setCountry(e.target.selectedIndex - 1);
                 }}
               >
-                <option selected disabled style={{ color: "black" }}> Country </option>
+                <option selected disabled style={{ color: "black" }}>
+                  {" "}
+                  Country{" "}
+                </option>
                 {countries.map((item) => (
                   <option style={{ color: "black" }}>{item.COUNTRY}</option>
                 ))}
@@ -243,6 +256,11 @@ function Home() {
             {error != "" && (
               <div style={{ color: "white", textAlign: "center" }}>
                 <span>All fields are required</span>
+              </div>
+            )}
+            {logic != "" && (
+              <div style={{ color: "white", textAlign: "center" }}>
+                <span>Drop-Off Date can't be before Pickup Date!</span>
               </div>
             )}
           </form>

@@ -1,19 +1,39 @@
-import { React, useState } from "react";
+import { useState, useEffect, React } from "react";
 import "./Login.css";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 function Login() {
+
+  useEffect(() => {
+    async function getData() {
+      if(location.state){
+        setCar (location.state.carDet)
+      }
+    }
+    getData();
+  }, []);
+
+  const location = useLocation();
+
   const [email, setEmail] = useState("");
+  const [car, setCar] = useState(0);
   const [password, setPassword] = useState("");
   const [error, setError] = useState(0);
   let navigate = useNavigate();
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     let history = document.referrer;
-    console.log(history);
+    console.log("PREVIOUS PAGE: " + history);
+    // console.log("NEXT VARIABLE" + location.state.next);
     if (email != "" && password != "") {
       axios
         .post("http://localhost:4000/login", {
@@ -24,7 +44,10 @@ function Login() {
           if (response.data.title === "Welcome, admin!") {
             navigate("/Admin");
           } else if (response.data.title === "Welcome, user!") {
-            if (String(history) === "http://localhost:3000/BrowseCars") {
+            console.log("im a user!!!!!");
+            if (
+              String(document.referrer) === "http://localhost:3000/BrowseCars"
+            ) {
               console.log("coming from browse page");
               console.log(response.data);
               navigate("/BrowseCars", {
@@ -39,13 +62,38 @@ function Login() {
                   endLocation: response.data.endLocation,
                   cities: response.data.cities,
                   name: response.data.name,
-                  isLogged: response.data.isLogged
+                  isLogged: 1,
+                  email: response.data.email,
                 },
               });
+            } else if (location.state) {
+              setCar(1);
+              if (location.state.next) {
+                console.log("coming from rent now");
+                navigate("/Payment", {
+                  state: {
+                    // city: response.data.city,
+                    // country: response.data.country,
+                    // startDate: response.data.startDate,
+                    // endDate: response.data.endDate,
+                    // startTime: response.data.startTime,
+                    // endTime: response.data.endTime,
+                    // startLocation: response.data.startLocation,
+                    // endLocation: response.data.endLocation,
+                    // cities: response.data.cities,
+                    // name: response.data.name,
+                    // isLogged: 1,
+                    // email: response.data.email
+                    car: location.state.car,
+                    tripData: location.state.tripData,
+                  },
+                });
+              }
             } else {
               navigate("/", {
                 state: {
                   name: response.data.name,
+                  email: response.data.email,
                 },
               });
             }
@@ -111,7 +159,20 @@ function Login() {
                 </form>
                 <hr />
                 <p class="footer p-disp">
-                  New member? Sign up <a href="/Signup">Here</a>{" "}
+                  New member? Sign up{" "}
+                  {car == 1 && (
+                    <Link
+                      to="/Signup"
+                      state={{
+                        car: location.state.car,
+                        tripData: location.state.tripData,
+                        ref: 1,
+                      }}
+                    >
+                      Here
+                    </Link>
+                  )}
+                  {car == 0 && <Link to="/Signup">Here</Link>}
                 </p>
               </div>
             </div>

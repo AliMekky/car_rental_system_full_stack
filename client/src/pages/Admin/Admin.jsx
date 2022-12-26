@@ -129,7 +129,7 @@ function Admin() {
 
   return (
     <div>
-      <Navbar name={name} isLogged={isLogged} end={end} show={true}/>
+      <Navbar name={name} isLogged={isLogged} end={end} show={true} next={0}/>
       <br />
       <div class="container">
         <div class="align-items-center">
