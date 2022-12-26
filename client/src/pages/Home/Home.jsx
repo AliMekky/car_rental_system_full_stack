@@ -1,4 +1,4 @@
-import {useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import "./Home.css";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
@@ -26,53 +26,57 @@ function Home() {
   const [startLocation, setstartLocation] = useState("0");
   const [endLocation, setendLocation] = useState("0");
   const [error, setError] = useState("");
-  const [country,setCountry] = useState("");
-  const [countries,setCountries] = useState([]);
-  const [cities,setCities] = useState([]);
+  const [country, setCountry] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
   const navigate = useNavigate();
 
   //fetching countries
-  useEffect(()=>{
+  useEffect(() => {
     async function getCountries() {
       try {
-        const res =  axios.get("http://localhost:4000/getCountries").then((response) => {
-        console.log(response.data);
-        setCountries(response.data);
-        // console.log(countries[0]);
-        setCountry(countries[0]);
-        console.log(country);
-        // console.log(countries)
-        })
+        const res = axios
+          .get("http://localhost:4000/getCountries")
+          .then((response) => {
+            console.log(response.data);
+            setCountries(response.data);
+            // console.log(countries[0]);
+            setCountry(countries[0]);
+            console.log(country);
+            // console.log(countries)
+          });
       } catch (error) {
-      console.log(error);
+        console.log(error);
       }
     }
     getCountries();
-  },[]);
+  }, []);
 
   //fetching cities according to the country chosen
-  useEffect(()=>{
-    if(countries[0]){
+  useEffect(() => {
+    if (countries[0]) {
       async function getCities() {
         try {
-          const res =  axios.get("http://localhost:4000/getCities",{
-            params : {
-              country : countries[country]
-            }
-          }).then((response) => {
-          console.log(response.data);
-          // setCountries(response.data);
-          // console.log(countries[0]);
-            setCities(response.data);
-          console.log(cities)
-          })
+          const res = axios
+            .get("http://localhost:4000/getCities", {
+              params: {
+                country: countries[country],
+              },
+            })
+            .then((response) => {
+              console.log(response.data);
+              // setCountries(response.data);
+              // console.log(countries[0]);
+              setCities(response.data);
+              console.log(cities);
+            });
         } catch (error) {
-        console.log(error);
+          console.log(error);
         }
       }
       getCities();
     }
-  },[country]);
+  }, [country]);
 
   const [isLogged, setIsLogged] = useState(0);
 
@@ -104,31 +108,36 @@ function Home() {
     }
   };
 
-
-  const goBrowse = (e)=>{
+  const goBrowse = (e) => {
     e.preventDefault();
-    if(startDate == "" || startTime == "" || endDate == "" || endTime == "")
-    {
+    if (startDate == "" || startTime == "" || endDate == "" || endTime == "") {
       setError("all fields are required");
-    }
-    else{
+    } else {
+      const res = axios.post("http://localhost:4000/updateData", {
+        startDate,
+        startTime,
+        startLocation,
+        cities,
+        endDate,
+        endTime,
+        endLocation,
+      });
       navigate("/BrowseCars", {
         state: {
-          startDate : startDate,
-          startTime : startTime,
-          startLocation : startLocation,
-          cities : cities,
-          endDate : endDate,
-          endTime : endTime,
-          endLocation : endLocation,
-          country : countries[country]
-        }
-    })
-
-
+          startDate: startDate,
+          startTime: startTime,
+          startLocation: startLocation,
+          cities: cities,
+          endDate: endDate,
+          endTime: endTime,
+          endLocation: endLocation,
+          country: countries[country],
+          name: name,
+          isLogged: isLogged,
+        },
+      });
     }
-  }
-
+  };
 
   return (
     <div>
@@ -166,26 +175,70 @@ function Home() {
         </div>
 
         <div className="datetime col-12 col-lg-4">
-          <form style = {{alignItems:"center"}} className="datetime-form" type="post">
+          <form
+            style={{ alignItems: "center" }}
+            className="datetime-form"
+            type="post"
+          >
             <div className="country">
-              <label style = {{color : "white",fontWeight:"500"}}>Country</label>
-              <select className="countrySelect" onChange={(e)=>{setCountry(e.target.selectedIndex)}}> 
-                {countries.map((item)=><option style= {{color : "black"}}>{item.COUNTRY}</option>)}
+              <label style={{ color: "white", fontWeight: "500" }}>
+                Country
+              </label>
+              <select
+                className="countrySelect"
+                onChange={(e) => {
+                  setCountry(e.target.selectedIndex);
+                }}
+              >
+                {countries.map((item) => (
+                  <option style={{ color: "black" }}>{item.COUNTRY}</option>
+                ))}
               </select>
             </div>
             <div style={{ position: "relative" }}>
-              <InputBox title={"Pick-up"} citiesOptions = {cities} editDate = {setstartDate} editTime = {setstartTime} editLocation = {setstartLocation} editError = {setError}/>
+              <InputBox
+                title={"Pick-up"}
+                citiesOptions={cities}
+                editDate={setstartDate}
+                editTime={setstartTime}
+                editLocation={setstartLocation}
+                editError={setError}
+              />
               <div className="box">
                 <SwapVertIcon />
               </div>
-              <InputBox title={"Drop-off"} citiesOptions = {cities} editDate = {setendDate} editTime = {setendTime} editLocation = {setendLocation} editError = {setError}/>
+              <InputBox
+                title={"Drop-off"}
+                citiesOptions={cities}
+                editDate={setendDate}
+                editTime={setendTime}
+                editLocation={setendLocation}
+                editError={setError}
+              />
             </div>
-            <div style={{ "margin-top": "10px",display:"inline-block",width : "100%",textAlign:"left",alignItems:"center"}}>
-              <button style = {{marginRight:"40%"}} className="login btn btn-primary" href="/BrowseCars" role="button" onClick={goBrowse}>
+            <div
+              style={{
+                "margin-top": "10px",
+                display: "inline-block",
+                width: "100%",
+                textAlign: "left",
+                alignItems: "center",
+              }}
+            >
+              <button
+                style={{ marginRight: "40%" }}
+                className="login btn btn-primary"
+                role="button"
+                onClick={goBrowse}
+              >
                 GO
               </button>
             </div>
-            {error != "" && <div style = {{color:"white",textAlign:"center"}}><span>All fields are required</span></div>}
+            {error != "" && (
+              <div style={{ color: "white", textAlign: "center" }}>
+                <span>All fields are required</span>
+              </div>
+            )}
           </form>
         </div>
 
