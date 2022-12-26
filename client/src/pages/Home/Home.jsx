@@ -121,21 +121,26 @@ function Home() {
         endDate,
         endTime,
         endLocation,
+      }).then((response)=>{
+        if(response.data == "done"){
+          navigate("/BrowseCars", {
+            state: {
+              startDate: startDate,
+              startTime: startTime,
+              startLocation: startLocation,
+              cities: cities,
+              endDate: endDate,
+              endTime: endTime,
+              endLocation: endLocation,
+              country: countries[country],
+              name: name,
+              isLogged: isLogged,
+            },
+          });
+        }
+
       });
-      navigate("/BrowseCars", {
-        state: {
-          startDate: startDate,
-          startTime: startTime,
-          startLocation: startLocation,
-          cities: cities,
-          endDate: endDate,
-          endTime: endTime,
-          endLocation: endLocation,
-          country: countries[country],
-          name: name,
-          isLogged: isLogged,
-        },
-      });
+
     }
   };
 
@@ -181,15 +186,16 @@ function Home() {
             type="post"
           >
             <div className="country">
-              <label style={{ color: "white", fontWeight: "500" }}>
+              {/* <label style={{ color: "white", fontWeight: "500" }}>
                 Country
-              </label>
+              </label> */}
               <select
                 className="countrySelect"
                 onChange={(e) => {
-                  setCountry(e.target.selectedIndex);
+                  setCountry(e.target.selectedIndex -1);
                 }}
               >
+                <option selected disabled style={{ color: "black" }}> Country </option>
                 {countries.map((item) => (
                   <option style={{ color: "black" }}>{item.COUNTRY}</option>
                 ))}

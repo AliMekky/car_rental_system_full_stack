@@ -48,21 +48,42 @@ function BrowseCars() {
   const [name, setName] = useState("Guest");
   const [isLogged, setIsLogged] = useState(0);
 
+
+  useEffect(()=>{
+    async function getData(){
+      const res = axios.get("http://localhost:4000/getData").then((response)=>{
+          console.log("data");
+          console.log(response.data);
+          setstartDate(response.data.startDate);
+          setstartTime(response.data.startTime);
+          setstartLocation(response.data.startLocation);
+          setendDate(response.data.endDate);
+          setendTime(response.data.endTime);
+          setendLocation(response.data.endLocation);
+          //setCountry(response.data.country);
+          setCities(response.data.cities);
+          setStartCity(response.data.cities[response.data.startLocation].CITY);
+          setEndCity(response.data.cities[response.data.endLocation].CITY);
+      })
+    }
+    getData();
+  },[]);
+
   useEffect(() => {
     if (location.state) {
-      setstartDate(location.state.startDate);
-      setstartTime(location.state.startTime);
-      setstartLocation(location.state.startLocation);
-      setendDate(location.state.endDate);
-      setendTime(location.state.endTime);
-      setendLocation(location.state.endLocation);
-      setCountry(location.country);
-      setCities(location.state.cities);
-      setStartCity(location.state.cities[location.state.startLocation].CITY);
-      setEndCity(location.state.cities[location.state.endLocation].CITY);
+      // setstartDate(location.state.startDate);
+      // setstartTime(location.state.startTime);
+      // setstartLocation(location.state.startLocation);
+      // setendDate(location.state.endDate);
+      // setendTime(location.state.endTime);
+      // setendLocation(location.state.endLocation);
+      // setCountry(location.country);
+      // setCities(location.state.cities);
+      // setStartCity(location.state.cities[location.state.startLocation].CITY);
+      // setEndCity(location.state.cities[location.state.endLocation].CITY);
       setName(location.state.name);
       setIsLogged(location.state.isLogged);
-      console.log(location.state);
+      // console.log(location.state);
 
       // setGetCar(!getCar);
       async function getCars() {
@@ -98,18 +119,18 @@ function BrowseCars() {
 
 
   // use effect that is called if any of the filter options changes
-  useEffect(()=>{
-    async function filterCars(){
-      const res = await axios.get("http://localhost:4000/filterCars",{
-        params : {
-          type : typeFilter,
-          capacity : capacityFilter,
-          price : priceFilter
-        }
-      })
-    }
-    filterCars();
-  },[typeFilter,capacityFilter,priceFilter]);
+  // useEffect(()=>{
+  //   async function filterCars(){
+  //     const res = await axios.get("http://localhost:4000/filterCars",{
+  //       params : {
+  //         type : typeFilter,
+  //         capacity : capacityFilter,
+  //         price : priceFilter
+  //       }
+  //     })
+  //   }
+  //   filterCars();
+  // },[typeFilter,capacityFilter,priceFilter]);
 
   // },[typeFilter,capacityFilter,price]);
   // use effect for debugging after each change.
@@ -210,16 +231,14 @@ function BrowseCars() {
       setError("all fields are required");
     } else {
       try {
-        const res = axios
-          .get("http://localhost:4000/getCars", {
-            params: {
-              country: country,
-              city: cities[startLocation].CITY,
-              startDate: startDate,
-              startTime: startTime,
-              endDate: endDate,
-              endTime: endTime,
-            },
+        const res = axios.post("http://localhost:4000/updateandgetCars", {
+            startDate,
+            startTime,
+            startLocation,
+            cities,
+            endDate,
+            endTime,
+            endLocation,
           })
           .then((response) => {
             console.log(response.data);
@@ -322,15 +341,16 @@ function BrowseCars() {
               {edit ? (
                 <form className="datetime-form" type="post">
                   <div className="country">
-                    <label style={{ color: "white", fontWeight: "500" }}>
+                    {/* <label style={{ color: "white", fontWeight: "500" }}>
                       Country
-                    </label>
+                    </label> */}
                     <select
                       className="countrySelect"
                       onChange={(e) => {
-                        setCountry(e.target.selectedIndex);
+                        setCountry(e.target.selectedIndex -1);
                       }}
                     >
+                      <option selected disabled style={{ color: "black" }}> Country </option>
                       {countries.map((item) => (
                         <option style={{ color: "black" }}>
                           {item.COUNTRY}

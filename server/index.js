@@ -147,11 +147,18 @@ app.post("/updateData", (req, res) => {
     endTime,
     endLocation,
   } = req.body;
+  global.data.startDate = startDate;
+  global.data.startTime = startTime;
+  global.data.endDate = endDate;
+  global.data.endTime = endTime;
+
+
   global.data.startLocation = startLocation;
   global.data.endLocation = endLocation;
   global.data.startCity = cities[startLocation].CITY;
   global.data.endCity = cities[endLocation].CITY;
   global.data.cities = cities;
+  res.send("done");
 });
 
 // create a route to log in a user
@@ -238,23 +245,30 @@ app.get("/logout", (req, res) => {
 // });
 
 app.get("/getCars", (req, res) => {
-  let city = req.query.city;
-  let country = req.query.country;
-  let startDate = req.query.startDate;
-  let endDate = req.query.endDate;
-  let startTime = req.query.startTime;
-  let endTime = req.query.endTime;
-  global.data.city = city;
-  global.data.country = country;
-  global.data.startDate = startDate;
-  global.data.endDate = endDate;
-  global.data.startTime = startTime;
-  global.data.endTime = endTime;
+  // let city = req.query.city;
+  // let country = req.query.country;
+  // let startDate = req.query.startDate;
+  // let endDate = req.query.endDate;
+  // let startTime = req.query.startTime;
+  // let endTime = req.query.endTime;
+  // global.data.city = city;
+  // global.data.country = country;
+  // global.data.startDate = startDate;
+  // global.data.endDate = endDate;
+  // global.data.startTime = startTime;
+  // global.data.endTime = endTime;
+  console.log(global.data.startCity);
+  city = global.data.startCity;
+  //country = global.data.country;
+  startDate = global.data.startDate;
+  endDate = global.data.endDate;
+  startTime = global.data.startTime;
+  endTime = global.data.endTime;
 
   // console.log("get city in browse");
   // console.log(global.data.city);
 
-  if (city && country && startDate && endDate && startTime && endTime) {
+  if (city && startDate && endDate && startTime && endTime) {
     let start = startDate + " " + startTime;
     let end = endDate + " " + endTime;
     db.query(
@@ -273,41 +287,79 @@ app.get("/getCars", (req, res) => {
   }
 });
 
-app.get("/filterCars",(req,res)=>{
-  const {type : type, capacity : capacity, price: price} = req.query;
-  // console.log(type);
-  // console.log(capacity);
-  // console.log(price);
-  var typekeys = Object.keys(type);
-  var capacitykeys = Object.keys(capacity);
+// app.get("/filterCars",(req,res)=>{
+//   const {type : type, capacity : capacity, price: price} = req.query;
+//   // console.log(type);
+//   // console.log(capacity);
+//   // console.log(price);
+//   var typekeys = Object.keys(type);
+//   var capacitykeys = Object.keys(capacity);
   
   
 
-  var filteredType = [] ;
-  typekeys.map(k=>{type[k] == "true" && filteredType.push(k)});
+//   var filteredType = [] ;
+//   typekeys.map(k=>{type[k] == "true" && filteredType.push(k)});
 
-  var filteredCapacity = [] ;
-  capacitykeys.map(k=>{capacity[k] == "true" && filteredCapacity.push(k.charAt(0))});
+//   var filteredCapacity = [] ;
+//   capacitykeys.map(k=>{capacity[k] == "true" && filteredCapacity.push(k.charAt(0))});
 
 
 
-  console.log(filteredType);
-  console.log(filteredCapacity);
-  console.log(price);
+//   console.log(filteredType);
+//   console.log(filteredCapacity);
+//   console.log(price);
 
   
   
-  db.query("SELECT DISTINCT * FROM CAR WHERE TYPE IN(?) OR CAPACITY IN(?) OR PRICE<?",[filteredType,filteredCapacity,parseFloat(price)],(err,rows)=>{
-    if(!err){
-      var result = JSON.parse(JSON.stringify(rows));
-       console.log(result);
-    }
-    else{
-      console.log(err);
+//   db.query("SELECT DISTINCT * FROM CAR WHERE TYPE IN(?) OR CAPACITY IN(?) OR PRICE<?",[filteredType,filteredCapacity,parseFloat(price)],(err,rows)=>{
+//     if(!err){
+//       var result = JSON.parse(JSON.stringify(rows));
+//        console.log(result);
+//     }
+//     else{
+//       console.log(err);
+//     }
+//     res.send(result);
+//   })
+
+// });
+
+app.get("/getData",(req,res)=>{
+    result = {startDate : global.data.startDate, 
+      startTime : global.data.startTime,
+      startLocation : global.data.startLocation,
+      endDate : global.data.endDate,
+      endTime : global.data.endTime,
+      endLocation : global.data.endLocation,
+      cities : global.data.cities,
     }
     res.send(result);
-  })
+});
 
+
+
+app.post("/updateandgetCars",(req,res)=>{
+  const {
+    startDate,
+    startTime,
+    startLocation,
+    cities,
+    endDate,
+    endTime,
+    endLocation,
+  } = req.body;
+  global.data.startDate = startDate;
+  global.data.startTime = startTime;
+  global.data.endDate = endDate;
+  global.data.endTime = endTime;
+
+
+  global.data.startLocation = startLocation;
+  global.data.endLocation = endLocation;
+  global.data.startCity = cities[startLocation].CITY;
+  global.data.endCity = cities[endLocation].CITY;
+  global.data.cities = cities;
+  res.redirect("/getCars");
 });
   
 app.post("/addCar", (req, res) => { 
