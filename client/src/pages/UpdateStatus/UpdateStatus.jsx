@@ -18,11 +18,17 @@ function UpdateStatus(props) {
   const [status, setStatus] = useState("");
   const [carStatusResponse, setcarStatusResponse] = useState("");
   const [error, setError] = useState("");
+  const statusArray = ["ACTIVE", "OUT OF SERVICE", "RENTED"];
 
 
   const update_status = (event) => {
 
-
+    if(status){
+      if(!statusArray.includes(status.toUpperCase()) ){
+          setError("Enter a valid status");
+          return;
+      }
+  }
 
     if(plateId !="" && status !="" ){
       axios

@@ -27,6 +27,7 @@ function CarDetail() {
         
       });
     } else {
+      console.log(location.state.isLogged)
       navigate("/Login", {
         state: {
           next: 1,

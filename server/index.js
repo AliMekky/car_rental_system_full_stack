@@ -92,11 +92,11 @@ app.post("/signup", (req, res) => {
       query,
       [name, email, hashedPassword, phone_number, isAdmin],
       (err, rows) => {
-        // if (!result) {
-        //     console.error("error in insert");
-        //     res.json({ title: "error", name: "" });
-        //     return;
-        // }
+        if (err) {
+            console.error("error in insert");
+            res.json({ title: "error", name: "" });
+            return;
+        }
         req.session.isAdmin = 0;
         req.session.name = name;
         req.session.isLogged = 1;
@@ -509,7 +509,9 @@ app.post("/addCar", (req, res) => {
       db.query(query, function(err, result) {
         if (err){
           console.log(err);
+          res.json({ title: "error"});
           res.send("ERROR !!");
+
         } 
         else{
           console.log('record inserted');
@@ -629,11 +631,11 @@ app.get("/dailyPayments", (req, res) => {
   let end = endDate + " " + endTime;
 
   let stat =
-    " SELECT PICKUP_DATE as 'DATE',SUM(DATEDIFF(DROPOFF_DATE, PICKUP_DATE)* CAR.PRICE  ) as 'TOTAL PAYMENTS' FROM RESERVATION NATURAL  JOIN CAR WHERE PICKUP_DATE>'" +
+    " SELECT PAYMENT_DAY as 'DATE',SUM(DATEDIFF(DROPOFF_DATE, PICKUP_DATE)* CAR.PRICE  ) as 'TOTAL PAYMENTS' FROM RESERVATION NATURAL  JOIN CAR WHERE PAYMENT_DAY>'" +
     start +
     "' AND DROPOFF_DATE<'" +
     end +
-    "'  GROUP BY (DATE(PICKUP_DATE))";
+    "'  GROUP BY (DATE(PAYMENT_DAY))";
   console.log(stat);
   db.query(stat, (err, rows) => {
     if (!err) {

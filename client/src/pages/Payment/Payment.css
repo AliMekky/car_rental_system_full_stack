@@ -130,3 +130,39 @@ body {
   align-items: center;
   height:350px;
 }
+.promo{
+  position: relative;
+  box-shadow: 0 0 40px rgba(51, 51, 51, .1);
+    
+  }
+
+  .promo input{
+
+   height: 60px;
+   text-indent: 25px;
+   border: 2px solid #d6d4d4;
+
+
+  }
+
+
+  .promo input:focus{
+
+   box-shadow: none;
+   border: 2px solid #3653e9;
+
+
+  }
+
+
+
+  .promo button{
+
+   position: absolute;
+   top: 5px;
+   right: 5px;
+   height: 50px;
+   width: 110px;
+   background: #3653e9;
+
+  }

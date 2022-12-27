@@ -32,7 +32,7 @@ function BrowseCars() {
     "6 Person": false,
     "8 Person or more": false,
   });
-  const [priceFilter, setPriceFilter] = useState(0);
+  const [priceFilter, setPriceFilter] = useState(200);
   const [startDate, setstartDate] = useState("");
   const [startTime, setstartTime] = useState("");
   const [endDate, setendDate] = useState("");
@@ -49,7 +49,7 @@ function BrowseCars() {
   const [error, setError] = useState("");
   const [logic, setLogic] = useState("");
   const location = useLocation();
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState();
   const [edit, setEdit] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -118,7 +118,7 @@ function BrowseCars() {
               // setCountries(response.data);
               // console.log(countries[0]);
               setCars(response.data);
-              // console.log(response.data);;
+              //console.log(response.data);;
             });
         } catch (error) {
           console.log(error);

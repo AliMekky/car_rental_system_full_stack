@@ -28,6 +28,7 @@ function AddCar(props) {
     const [carImage, setCarImage] = useState("");
     const [carResponse, setCarResponse] = useState("");
     const [error, setError] = useState("");
+    const types = ["sport", "suv", "mpv", "sedan","coupe","hatchback"];
 
     const car_insertion = (event) => {
         
@@ -61,10 +62,11 @@ function AddCar(props) {
                 return;
             }
         }
-
+  
         if(carType){
-            if(carType.toLowerCase() != "sport" || carType.toLowerCase() != "suv" || carType.toLowerCase() != "mpv" || carType.toLowerCase() != "sedan" || carType.toLowerCase() != "coupe" || carType.toLowerCase() != "hatchback"){
+            if(!types.includes(carType.toLowerCase()) ){
                 setError("Enter a valid car type");
+                return;
             }
         }
         if(carCapacity){
@@ -108,8 +110,10 @@ function AddCar(props) {
                     if(response.length!=0){
                         // alert(response.data);
                         setCarResponse(response.data);
+                       
                         // props.continue(false);
                     }
+                 
                 })
         }
     };
