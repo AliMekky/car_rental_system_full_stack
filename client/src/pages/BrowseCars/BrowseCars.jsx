@@ -144,21 +144,7 @@ function BrowseCars() {
     filterCars();
   },[typeFilter,capacityFilter,priceFilter]);
 
-  // },[typeFilter,capacityFilter,price]);
-  // use effect for debugging after each change.
-  // useEffect(()=>{
-  //   console.log(typeFilter);
-  //   console.log(capacityFilter);
-  //   console.log(priceFilter);
-  // },[priceFilter]);
 
-  // SELECT * FROM CAR
-  // NATURAL JOIN office
-  // WHERE COUNTRY = 'Egypt'
-  // AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR)
-  // EXCEPT
-  // (SELECT PLATE_ID FROM reservation
-  // WHERE PICKUP_DATE <= '2022-12-20 00:00:00' AND DROPOFF_DATE >= '2022-12-10 00:00:00'));
   useEffect(() => {
     async function getCountries() {
       if (location.state) {
@@ -209,32 +195,7 @@ function BrowseCars() {
     }
   }, [country]);
 
-  //   useEffect( () => {
-  //     fetchItems();
-  // }, []);
-
-  // const fetchItems = async () => {
-  //   try{
-  //     const res = await axios.get('http://localhost:4000/browseCar');
-  //     console.log(res.data);
-  //     setMessage(res.data);
-  //   }
-  //   catch(err){
-  //     console.log(err);
-  //   }
-  // };
-
-  // const fetchItems = async () => {
-  //   try {
-  //     const res = await axios.get("http://localhost:4000/").then((response) => {
-  //       console.log(response.data.name);
-  //       setName(response.data.name);
-  //     });
-  //     console.log("Successful");
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  
 
   const handleGo = (e) => {
     e.preventDefault();
@@ -335,7 +296,7 @@ function BrowseCars() {
           <hr />
           <label for="customRange1" class="categoryType form-label">
             <PaidIcon fontSize="small" style={{ "margin-right": "5px" }} />
-            Price = {price}$/hr
+            Price = {price}$/day
           </label>
           <input
             type="range"

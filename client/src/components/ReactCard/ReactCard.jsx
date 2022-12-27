@@ -52,7 +52,7 @@ function ReactCard(props) {
               color: "#90A3BF",
             }}
           >
-            hr
+            day
           </span>
           <Link
             to="/CarDetail"

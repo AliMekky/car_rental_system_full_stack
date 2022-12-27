@@ -269,9 +269,9 @@ function Payment() {
                             <label class="label_title" style={{ color: "red" }}> Discount</label>)}
                       </div>
                       <div className="col">
-                        <h6 style={{ fontWeight: "bold", paddingLeft: "28px" }} >{total + "EGP"}</h6>
+                        <h6 style={{ fontWeight: "bold", paddingLeft: "28px" }} >{total + "USD"}</h6>
                         {
-                          discount && (<h6 style={{ fontWeight: "bold", paddingLeft: "28px", color: "red" }} >{discounted + "EGP"}</h6>)}
+                          discount && (<h6 style={{ fontWeight: "bold", paddingLeft: "28px", color: "red" }} >{discounted + "USD"}</h6>)}
                       </div>
                     </div>
                     <div class="row " style={{ paddingLeft: "10px" }}>
@@ -284,7 +284,7 @@ function Payment() {
                       </div>
                       <div className="col">
                         {
-                          discount ? (<h3 style={{ fontWeight: "bold" }} >{newPrice + "EGP"}</h3>) : (<h3 style={{ fontWeight: "bold" }} >{total + "EGP"}</h3>)}
+                          discount ? (<h3 style={{ fontWeight: "bold" }} >{newPrice + "EGP"}</h3>) : (<h3 style={{ fontWeight: "bold" }} >{total + "USD"}</h3>)}
                       </div>
                     </div>
                   </div>
