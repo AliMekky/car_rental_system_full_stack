@@ -278,7 +278,7 @@ app.get("/getCars", (req, res) => {
     let start = startDate + " " + startTime;
     let end = endDate + " " + endTime;
     db.query(
-      "SELECT PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?))",
+      "SELECT PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE CITY = ? AND CURRENT_STATUS = 'ACTIVE' AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?))",
       [city, end, start],
       (err, rows) => {
         if (!err) {
@@ -336,7 +336,7 @@ app.get("/filterCars",(req,res)=>{
   console.log(filteredCapacity);
   console.log(price);
 
-  db.query("SELECT PLATE_ID, MANUFACTURER, MODEL, `YEAR`, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE ((TYPE IN(?)) AND (CAPACITY IN(?)) AND(PRICE<=?)) AND PLATE_ID IN (SELECT PLATE_ID FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?)))"
+  db.query("SELECT PLATE_ID, MANUFACTURER, MODEL, `YEAR`, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE ((TYPE IN(?)) AND (CAPACITY IN(?)) AND(PRICE<=?)) AND PLATE_ID IN (SELECT PLATE_ID FROM CAR NATURAL JOIN office WHERE CITY = ? AND CURRENT_STATUS = 'ACTIVE' AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?)))"
   ,[filteredType,filteredCapacity,parseFloat(price),city,end,start],(err,rows)=>{
     if(!err){
       var result = JSON.parse(JSON.stringify(rows));
