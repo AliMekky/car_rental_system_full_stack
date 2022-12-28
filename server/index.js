@@ -217,11 +217,14 @@ app.post("/login", (req, res) => {
 
 // create a middleware function to protect routes from non-admin users
 const checkAdmin = (req, res, next) => {
-  if (!sessionv.isAdmin) {
-    res.status(401).send("Unauthorized");
-    return;
+  if(sessionv){
+    if (!sessionv.isAdmin) {
+      res.status(401).send("Unauthorized");
+      return;
+    }
+    next();
   }
-  next();
+  
 };
 
 // create a route that is protected by the middleware
@@ -509,7 +512,7 @@ app.post("/addCar", (req, res) => {
       db.query(query, function(err, result) {
         if (err){
           console.log(err);
-          res.json({ title: "error"});
+          //res.json({ title: "error"});
           res.send("ERROR !!");
 
         } 
