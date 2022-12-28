@@ -7,7 +7,18 @@ import "./LocationDateTime.css";
 {countries.map((item)=><option style= {{color : "black"}}>{item.COUNTRY}</option>)}
 </select> */}
 function LocationDateTime(props) {
-  console.log(props);
+  var d = new Date(),
+  month = '' + (d.getMonth() + 1),
+  day = '' + d.getDate(),
+  year = d.getFullYear();
+
+  if (month.length < 2) 
+        month = '0' + month;
+  if (day.length < 2) 
+        day = '0' + day;
+
+  var currentDate = [year, month, day].join('-');
+  
   return (
                 <div className = "main">
                     {/* <label><RadioButtonCheckedIcon/> Country</label> */}
@@ -27,7 +38,7 @@ function LocationDateTime(props) {
                       </div>
                       <div className = "col-4 trip" style={{"borderRight" : "1px solid #90a3bf"}}>
                           <label>Date</label>
-                          <div><input type={"date"} onChange = {(e)=>{props.editDate(e.target.value); props.editError("");}}></input></div>
+                          <div><input type={"date"} min = {currentDate} onChange = {(e)=>{props.editDate(e.target.value); props.editError("");}}></input></div>
                       </div>
                       <div className = "col-4 trip">
                           <div>Time</div>
