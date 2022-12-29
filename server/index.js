@@ -217,11 +217,14 @@ app.post("/login", (req, res) => {
 
 // create a middleware function to protect routes from non-admin users
 const checkAdmin = (req, res, next) => {
-  if (!sessionv.isAdmin) {
-    res.status(401).send("Unauthorized");
-    return;
+  if(sessionv){
+    if (!sessionv.isAdmin) {
+      res.status(401).send("Unauthorized");
+      return;
+    }
+    next();
   }
-  next();
+  
 };
 
 // create a route that is protected by the middleware
@@ -333,7 +336,7 @@ app.get("/filterCars",(req,res)=>{
   console.log(filteredCapacity);
   console.log(price);
 
-  db.query("SELECT PLATE_ID, MANUFACTURER, MODEL, `YEAR`, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE ((TYPE IN(?)) AND (CAPACITY IN(?)) AND(PRICE<=?)) AND PLATE_ID IN (SELECT PLATE_ID FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?)))"
+  db.query("SELECT PLATE_ID, MANUFACTURER, MODEL, `YEAR`, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE ((TYPE IN(?)) AND (CAPACITY IN(?)) AND(PRICE<=?)) AND PLATE_ID IN (SELECT PLATE_ID FROM CAR NATURAL JOIN office WHERE CITY = ? AND CURRENT_STATUS = 'ACTIVE' AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?)))"
   ,[filteredType,filteredCapacity,parseFloat(price),city,end,start],(err,rows)=>{
     if(!err){
       var result = JSON.parse(JSON.stringify(rows));
@@ -508,7 +511,7 @@ app.post("/addCar", (req, res) => {
     
       db.query(query, function(err, result) {
         if (err){
-          // console.log(err);
+          console.log(err);
           res.json({ title: "error"});
           res.send("ERROR !!");
 
