@@ -71,18 +71,6 @@ function Signup() {
                 console.log("coming from rent now");
                 navigate("/Payment", {
                   state: {
-                    // city: response.data.city,
-                    // country: response.data.country,
-                    // startDate: response.data.startDate,
-                    // endDate: response.data.endDate,
-                    // startTime: response.data.startTime,
-                    // endTime: response.data.endTime,
-                    // startLocation: response.data.startLocation,
-                    // endLocation: response.data.endLocation,
-                    // cities: response.data.cities,
-                    // name: response.data.name,
-                    // isLogged: 1,
-                    // email: response.data.email
                     car: location.state.car,
                     tripData: location.state.tripData,
                   },

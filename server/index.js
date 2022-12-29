@@ -275,7 +275,7 @@ app.get("/getCars", (req, res) => {
     let start = startDate + " " + startTime;
     let end = endDate + " " + endTime;
     db.query(
-      "SELECT PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?))",
+      "SELECT PLATE_ID, MANUFACTURER, MODEL, YEAR, PRICE, TYPE, CAPACITY, COLOR, IMAGE, CITY FROM CAR NATURAL JOIN office WHERE CITY = ? AND PLATE_ID IN ((SELECT PLATE_ID FROM CAR) EXCEPT (SELECT PLATE_ID FROM reservation WHERE PICKUP_DATE <= ? AND DROPOFF_DATE >= ?)) AND CURRENT_STATUS = \"ACTIVE\"",
       [city, end, start],
       (err, rows) => {
         if (!err) {
@@ -408,7 +408,7 @@ app.post("/updateStatus", (req, res) => {
   console.log("update status server");
 
 
-
+  db.query('UPDATE CAR SET CURRENT_STATUS = ? WHERE PLATE_ID = ?',[status,plate_Id]);
   const query=   `INSERT INTO status_logger (PLATE_ID,STATUS,START_DATE) VALUES (` +
   str +
   ")";
@@ -508,7 +508,7 @@ app.post("/addCar", (req, res) => {
     
       db.query(query, function(err, result) {
         if (err){
-          console.log(err);
+          // console.log(err);
           res.json({ title: "error"});
           res.send("ERROR !!");
 
@@ -517,7 +517,7 @@ app.post("/addCar", (req, res) => {
           console.log('record inserted');
           db.query(query2, function(err, result) {
             if (err){
-              console.log(err);
+              // console.log(err);
               res.send("ERROR !!");
             } 
             else{
