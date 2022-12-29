@@ -840,7 +840,7 @@ app.get("/search", (req, res) => {
     if (selectedValues[1] == "customer" && selectedValues[0] == "day") {
       final = stat6;
     }
-    if (selectedValues[0] == "customer" && "selectedValues"[1] == "day") {
+    if (selectedValues[0] == "customer" && selectedValues[1] == "day") {
       final = stat6;
     }
   }
