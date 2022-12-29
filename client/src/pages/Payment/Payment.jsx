@@ -284,7 +284,7 @@ function Payment() {
                       </div>
                       <div className="col">
                         {
-                          discount ? (<h3 style={{ fontWeight: "bold" }} >{newPrice + "EGP"}</h3>) : (<h3 style={{ fontWeight: "bold" }} >{total + "USD"}</h3>)}
+                          discount ? (<h3 style={{ fontWeight: "bold" }} >{newPrice + "EGP"}</h3>) : (<h3 style={{ fontWeight: "bold" }} >{total + "EGP"}</h3>)}
                       </div>
                     </div>
                   </div>
