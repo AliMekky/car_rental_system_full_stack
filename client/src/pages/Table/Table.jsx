@@ -12,15 +12,32 @@ function Table() {
   const location = useLocation();
   const input = location.state.info;
   const name = location.state.title;
-  //   console.log(location.state.info);
   var keys = Object.keys(input[0]);
+  const dates = ["DROPOFF_DATE", "RESERVATION_DAY", "PICKUP_DATE", "PAYMENT_DAY"];
   console.log(keys);
   console.log(input);
   console.log(name);
+
   for (let i = 0; i < input.length; i++) {
     input[i] = Object.assign({ id: i }, input[i]);
+   
   }
 
+  for (let i = 0; i < input.length; i++) {
+    let key=Object.keys(input[i])
+    for (let j = 0; j < key.length; j++)
+    if (dates.includes(key[j])){
+   
+      input[i][key[j]]=new Date(input[i][key[j]]).toLocaleDateString();
+
+    
+      
+
+    }
+    input[i] = Object.assign({ id: i }, input[i]);
+   
+  }
+  console.log(input);
   var columns = [];
   for (let i = 0; i < keys.length; i++) {
     columns.push({ field: keys[i], headerName: keys[i], width: 150 });
